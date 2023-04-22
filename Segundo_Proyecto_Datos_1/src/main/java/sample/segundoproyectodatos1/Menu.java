@@ -32,7 +32,11 @@ public class Menu extends Application {
     Stage stage = new Stage();
 
 
-
+    /**
+     * Empieza la aplicacion del menu
+     * @param stage
+     * @throws IOException
+     */
 
     @Override
     public void start(Stage stage) throws IOException {
