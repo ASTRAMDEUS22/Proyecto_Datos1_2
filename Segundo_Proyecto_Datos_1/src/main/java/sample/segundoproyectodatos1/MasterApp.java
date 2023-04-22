@@ -36,7 +36,9 @@ public class MasterApp{
     //Stage
     Stage stage = new Stage();
 
-
+    /**
+     * Se encarga de cargar los elementos gráficos de la interfaz
+     */
     public void elementosGraficos() {
         paneMain = new Pane();
 
