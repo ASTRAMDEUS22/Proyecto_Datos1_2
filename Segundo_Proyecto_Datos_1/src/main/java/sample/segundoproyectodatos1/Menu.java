@@ -2,9 +2,7 @@ package sample.segundoproyectodatos1;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -15,20 +13,23 @@ public class Menu extends Application {
     //Definir objetos de la interfaz
 
     //Labels
-    Label labelMain,
-            labelOpcion,
-            labelCliente,
-            labelAdmin;
+    private Label labelMain,
+            labelCliente;
 
     //Botones
-    Button botonAdministrador,
-            botonCliente;
+    Button botonCliente;
 
     //Caja de texto
-    TextField usuarioAdmin,
-            usuarioCliente,
-            passwordAdmin,
-            passWordCliente;
+    TextField usuarioCliente;
+
+
+    PasswordField passwordCliente;
+
+    //Caja de opciones
+    ComboBox<String> opcionesDeUsuario;
+
+    //Stage
+    Stage stage = new Stage();
 
 
 
@@ -36,8 +37,9 @@ public class Menu extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         StackPane mainPane = new StackPane();  //StackPane principal
-        StackPane clientPane = new StackPane();  //StackPane del cliente
-        StackPane adminPane = new StackPane();  //StackPane del admin
+        StackPane loginPane = new StackPane();  //StackPane del login
+
+        this.stage = stage;
 
         //mainPane--------------------------------------------
         //Labels
@@ -47,69 +49,66 @@ public class Menu extends Application {
         labelMain.setTranslateY(-250);
         labelMain.setStyle("-fx-font-size: 20;");
 
-        //clientPane--------------------------------------------
+        //loginPane--------------------------------------------
         //Label
         labelCliente = new Label();
-        labelCliente.setText("Cliente");
+        labelCliente.setText("Login");
         labelCliente.setTranslateX(0);
         labelCliente.setTranslateY(-100);
         labelCliente.setStyle("-fx-font-size: 15;");
 
         //Botones
         botonCliente = new Button();
-        botonCliente.setText("Seleccionar");
-        botonCliente.setStyle("-fx-font-size: 15;");
+        botonCliente.setText("Iniciar sesión");
+        botonCliente.setStyle("-fx-font-size: 12;");
+        botonCliente.setOnAction(e -> comprobarLoginClient());
+        botonCliente.setTranslateY(100);
+
+        //Cajas de texto
+        usuarioCliente = new TextField();
+        usuarioCliente.setPromptText("Usuario");
+        usuarioCliente.setMaxWidth(120);
+        usuarioCliente.setTranslateY(-30);
+
+        passwordCliente = new PasswordField();
+        passwordCliente.setPromptText("Contraseña");
+        passwordCliente.setMaxWidth(120);
+        passwordCliente.setTranslateY(10);
+
+        //Caja de opciones
+        opcionesDeUsuario = new ComboBox<>();
+        opcionesDeUsuario.setPromptText("Tipo de usuario");
+        opcionesDeUsuario.getItems().addAll(
+                "Administrador",
+                "Cliente"
+        );
+        opcionesDeUsuario.setTranslateY(50);
+        opcionesDeUsuario.setMaxWidth(100);
 
         //Caracteristicas del StackPane del cliente
-        clientPane.setStyle("-fx-border-color: #000");
-        clientPane.setMaxWidth(220);
-        clientPane.setMaxHeight(300);
-        clientPane.setTranslateX(-400);
+        loginPane.setStyle("-fx-border-color: #000");
+        loginPane.setMaxWidth(220);
+        loginPane.setMaxHeight(300);
 
-        //adminPane---------------------------------------------
-        //Label
-        labelAdmin = new Label();
-        labelAdmin.setText("Administrador");
-        labelAdmin.setTranslateX(0);
-        labelAdmin.setTranslateY(-100);
-        labelAdmin.setStyle("-fx-font-size: 15;");
-
-        //Botones
-        //Botones
-        botonAdministrador = new Button();
-        botonAdministrador.setText("Seleccionar");
-        botonAdministrador.setStyle("-fx-font-size: 15;");
-
-        //Caracteristicas del StackPane del administrador
-        adminPane.setStyle("-fx-border-color: #000");
-        adminPane.setMaxWidth(220);
-        adminPane.setMaxHeight(300);
-        adminPane.setTranslateX(400);
-
-
-
-        //Agregar elementos graficos al clientPane
-        clientPane.getChildren().addAll(
+        //Agregar elementos graficos al loginPane
+        loginPane.getChildren().addAll(
                 labelCliente,
-                botonCliente
+                botonCliente,
+                usuarioCliente,
+                passwordCliente,
+                opcionesDeUsuario
         );
 
-        //Agregar elementos graficos al clientPane
-        adminPane.getChildren().addAll(
-                labelAdmin,
-                botonAdministrador
-        );
 
         //Agregar elementos graficos al mainPane
         mainPane.getChildren().addAll(
                 labelMain,
-                clientPane,
-                adminPane
+                loginPane
         );
 
 
         Scene menu = new Scene(mainPane,1200,700);
-        stage.setTitle("MasterApp");
+        stage.setTitle("MenuApp");
         stage.setScene(menu);
 
 
@@ -120,6 +119,48 @@ public class Menu extends Application {
 
 
     }
+
+    public void comprobarLoginClient(){
+
+        String usuario = usuarioCliente.getText();  //Texto en el nombre de usuario
+        String password = passwordCliente.getText();  ////Texto en la contraseña
+        String tiposUsuario = opcionesDeUsuario.getValue();
+
+        String prueba = "user",contra = "1234";
+
+        /*
+        if (!usuario.equals(prueba)){  //Verifica que el usuario sea uno registrado
+            return;
+        }
+        if (!password.equals(contra)){  //Verifica que la contraseña sea una registrada
+            return;
+        }*/
+
+        //Ejecutar código después de validar la información del login
+
+
+
+        if (tiposUsuario.equals("Administrador")){  //Si el usuario es de tipo administrador
+            MasterApp masterApp = new MasterApp();  //Crear una ventana MasterApp
+            masterApp.elementosGraficos();  //Mostrar la ventana MasterApp
+            //stage.close();  //Cerrar
+        }else {  //Si el usuario es de tipo cliente
+            ClientApp clientApp = new ClientApp();  //Crear una ventana ClientApp
+            clientApp.elementosGraficos();  //Mostrar la ventana ClientApp
+            //stage.close();  //Cerrar
+        }
+
+
+
+
+    }
+
+
+
+
+
+
+
 
     public static void main(String[] args) {
         launch();
