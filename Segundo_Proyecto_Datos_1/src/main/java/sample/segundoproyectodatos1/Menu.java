@@ -11,7 +11,7 @@ import java.io.IOException;
 public class Menu extends Application {
 
     //Definir objetos de la interfaz
-
+    //wenas :)
     //Labels
     private Label labelMain,
             labelCliente;
