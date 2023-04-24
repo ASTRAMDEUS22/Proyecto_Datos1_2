@@ -44,19 +44,19 @@ public class MasterApp{
 
         //Panel de la zona superior, separa la barra de opciones de los otros Pane
         paneSuperior = new Pane();
-        paneSuperior.setStyle("-fx-border-color: #ff0000");
+        //paneSuperior.setStyle("-fx-border-color: #ff0000");
         paneSuperior.setMaxHeight(26);
 
         //Pane correspondiente a la opción #1 del ComboBox
         paneOpcion1 = new Pane();
-        paneOpcion1.setStyle("-fx-border-color: #0048ff");
+        //paneOpcion1.setStyle("-fx-border-color: #0048ff");
         paneOpcion1.setMinWidth(1200);  //Anchura mínima
         paneOpcion1.setMinHeight(700);  //Altura mínima
         paneOpcion1.setTranslateY(26);
 
         //Pane correspondiente a la opción #2 del ComboBox
         paneOpcion2 = new Pane();
-        paneOpcion2.setStyle("-fx-border-color: #00ff23");
+        //paneOpcion2.setStyle("-fx-border-color: #00ff23");
         paneOpcion2.setMinWidth(1200);  //Anchura mínima
         paneOpcion2.setMinHeight(700);  //Altura mínima
         paneOpcion2.setTranslateY(26);
@@ -152,11 +152,6 @@ public class MasterApp{
 
 
 
-
-
-
-
-
         //Se agregan los elementos a un Pane funcionando como barra superior
         paneSuperior.getChildren().addAll(
                 menuButton
@@ -192,17 +187,6 @@ public class MasterApp{
                 tab1,
                 tab2
         );
-
-
-
-
-
-
-
-
-
-
-
 
 
 
