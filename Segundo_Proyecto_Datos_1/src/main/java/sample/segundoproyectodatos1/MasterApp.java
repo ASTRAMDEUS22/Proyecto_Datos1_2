@@ -113,7 +113,6 @@ public class MasterApp{
             }
         });
 
-
         //Creación de un nuevo administrador
         labelAgregarAdministrador = new Label();
         labelAgregarAdministrador.setText("Agregar un nuevo administrador");
@@ -148,8 +147,7 @@ public class MasterApp{
         ListView<String> listaPersonas = new ListView<>(personas);
         listaPersonas.setTranslateX(200);
         listaPersonas.setTranslateY(200);
-
-
+        
 
 
         //Se agregan los elementos a un Pane funcionando como barra superior

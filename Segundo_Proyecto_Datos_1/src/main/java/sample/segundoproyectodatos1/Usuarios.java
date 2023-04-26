@@ -12,7 +12,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class Usuarios {
-    public static void main(String[] args) {
+    /*public void obtenerUsuarios() {
         List<Usuario> usuarios = cargarUsuariosDesdeXML();
         if (usuarios.isEmpty()) {
             System.out.println("No hay usuarios registrados.");
@@ -31,16 +31,18 @@ public class Usuarios {
         } else {
             System.out.println("El nombre de usuario o la contraseña son incorrectos.");
         }
-    }
+    }*/
 
-    private static List<Usuario> cargarUsuariosDesdeXML() {
+    public List<Usuario> cargarUsuariosDesdeXML() {
         List<Usuario> usuarios = new ArrayList<>();
         try {
-            File file = new File("C:\\Users\\XPC}\\OneDrive\\Documents\\GitHub\\Proyecto_Datos1_2\\Segundo_Proyecto_Datos_1\\.idea\\Users.xml");
+            File file = new File("C:\\Users\\josth\\OneDrive\\Documentos\\Proyecto_Datos1_2\\Proyecto_Datos1_2\\Segundo_Proyecto_Datos_1\\src\\main\\java\\Archivos_XML");
+
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(file);
             document.getDocumentElement().normalize();
+            //Obtener lista de elementos con la etiqueta "user"
             NodeList nodeList = document.getElementsByTagName("user");
 
             for (int i = 0; i < nodeList.getLength(); i++) {
@@ -59,14 +61,14 @@ public class Usuarios {
         return usuarios;
     }
 
-    private static Usuario autenticarUsuario(List<Usuario> usuarios, String username, String password) {
+    /*private static Usuario autenticarUsuario(List<Usuario> usuarios, String username, String password) {
         for (Usuario usuario : usuarios) {
             if (usuario.getUsername().equals(username) && usuario.getPassword().equals(password)) {
                 return usuario;
             }
         }
         return null;
-    }
+    }*/
 }
 
 class Usuario {

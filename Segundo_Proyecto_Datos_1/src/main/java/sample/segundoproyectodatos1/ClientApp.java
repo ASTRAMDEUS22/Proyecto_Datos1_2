@@ -5,12 +5,20 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+
 public class ClientApp {
+
 
     //Definir objetos de la interfaz
 
@@ -31,28 +39,34 @@ public class ClientApp {
     //Stage
     Stage stage = new Stage();
 
+
     //Lista de personas de ejemplo
     ObservableList<Platillo> listaPlatillos = FXCollections.observableArrayList();
 
-    public void elementosGraficos() {
+
+    public void elementosGraficos() throws IOException {
+
+
 
         mainPane = new Pane();
+
+
 
         //Menu
         labelMenu = new Label();
         labelMenu.setText("Menu de platillos");
         labelMenu.setTranslateX(25);
 
-        labelInfoPlatillo = new Label();
+        Label labelInfoPlatillo = new Label();
         labelInfoPlatillo.setText("Información del platillo");
         labelInfoPlatillo.setTranslateX(300);
 
-        labelNombre = new Label();
+        Label labelNombre = new Label();
         labelNombre.setText("Nombre:");
         labelNombre.setTranslateX(300);
         labelNombre.setTranslateY(100);
 
-        labelNombrePlatillo = new Label();
+        Label labelNombrePlatillo = new Label();
         labelNombrePlatillo.setTranslateX(300);
         labelNombrePlatillo.setTranslateY(120);
 
@@ -73,6 +87,7 @@ public class ClientApp {
         labelPrecioPlatillo = new Label();
         labelPrecioPlatillo.setTranslateX(300);
         labelPrecioPlatillo.setTranslateY(260);
+
 
 
         paneMenu = new Pane();

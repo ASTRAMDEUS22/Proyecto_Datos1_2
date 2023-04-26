@@ -6,7 +6,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 
 public class Menu extends Application {
 
@@ -29,6 +32,9 @@ public class Menu extends Application {
 
     //Stage
     Stage stage = new Stage();
+
+    //Servidor prueba login
+    ServerApp serverApp = new ServerApp();
 
 
     /**
@@ -123,46 +129,42 @@ public class Menu extends Application {
 
     }
 
-    public void comprobarLoginClient(){
+    public void comprobarLoginClient() {
 
         String usuario = usuarioCliente.getText();  //Texto en el nombre de usuario
         String password = passwordCliente.getText();  ////Texto en la contraseña
         String tiposUsuario = opcionesDeUsuario.getValue();
-
-        String prueba = "user",contra = "1234";
-
-        /*
-        if (!usuario.equals(prueba)){  //Verifica que el usuario sea uno registrado
-            return;
-        }
-        if (!password.equals(contra)){  //Verifica que la contraseña sea una registrada
-            return;
-        }*/
-
-        //Ejecutar código después de validar la información del login
-
-
+        //Socket socket = null;
+        Message message = new Message("comprobarLogin",usuario,password);
 
         if (tiposUsuario.equals("Administrador")){  //Si el usuario es de tipo administrador
             MasterApp masterApp = new MasterApp();  //Crear una ventana MasterApp
             masterApp.elementosGraficos();  //Mostrar la ventana MasterApp
             //stage.close();  //Cerrar
+
         }else {  //Si el usuario es de tipo cliente
-            ClientApp clientApp = new ClientApp();  //Crear una ventana ClientApp
-            clientApp.elementosGraficos();  //Mostrar la ventana ClientApp
-            //stage.close();  //Cerrar
+            //Se envia
+
+            try {
+                Socket socket = new Socket("192.168.1.246",1234);
+                ObjectOutputStream enviar_datos = new ObjectOutputStream(socket.getOutputStream());
+
+                enviar_datos.writeObject(message);
+
+                socket.close();
+
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            //serverApp.comprobarLogin(usuario,password);
+
+
         }
 
 
-
-
     }
-
-
-
-
-
-
 
 
     public static void main(String[] args) {
