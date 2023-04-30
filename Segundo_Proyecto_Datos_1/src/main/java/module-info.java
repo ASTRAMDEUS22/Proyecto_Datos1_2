@@ -7,6 +7,7 @@ module sample.segundoproyectodatos1 {
     requires org.kordamp.bootstrapfx.core;
     requires java.xml;
     requires com.fasterxml.jackson.databind;
+    requires java.scripting;
 
     opens MainClass to javafx.fxml;
     exports MainClass;
