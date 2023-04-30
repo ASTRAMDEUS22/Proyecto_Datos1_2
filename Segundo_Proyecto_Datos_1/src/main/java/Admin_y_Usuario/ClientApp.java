@@ -1,24 +1,21 @@
-package sample.segundoproyectodatos1;
+package Admin_y_Usuario;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import Clases_auxiliares.Message;
+import Clases_auxiliares.Platillo;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.ServerSocket;
+import java.io.*;
 import java.net.Socket;
 
-public class ClientApp {
-
+public class ClientApp{
 
     //Definir objetos de la interfaz
 
@@ -97,6 +94,10 @@ public class ClientApp {
         paneMenu.setTranslateX(50);
         paneMenu.setTranslateY(50);
 
+        /*Se va a crear un Socket que comunicará la ClientApp y el ServerApp para crear la lista de Platillos
+        obtenidos a partir del archivo JSON.
+         */
+       //solicitarListaPlatillos();
 
 
         ListView<Platillo> listViewPlatillos = new ListView<>(listaPlatillos);
@@ -168,5 +169,24 @@ public class ClientApp {
 
     }
 
+    private void solicitarListaPlatillos(){
+        //System.out.println("solicitarLitaPlatillo");
+        try {
+
+            Socket socket = new Socket("192.168.1.246",1234);
+
+            Message message = new Message("obtenerListaPlatillos");
+
+            ObjectOutputStream envio_de_datos = new ObjectOutputStream(socket.getOutputStream());
+
+            envio_de_datos.writeObject(message);
+
+            socket.close();
+
+
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+    }
 
 }

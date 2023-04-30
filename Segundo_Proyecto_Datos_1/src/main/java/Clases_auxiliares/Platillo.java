@@ -1,4 +1,4 @@
-package sample.segundoproyectodatos1;
+package Clases_auxiliares;
 
 public class Platillo {
 

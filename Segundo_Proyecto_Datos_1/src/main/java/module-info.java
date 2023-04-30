@@ -6,7 +6,14 @@ module sample.segundoproyectodatos1 {
     requires com.dlsc.formsfx;
     requires org.kordamp.bootstrapfx.core;
     requires java.xml;
+    requires com.fasterxml.jackson.databind;
 
-    opens sample.segundoproyectodatos1 to javafx.fxml;
-    exports sample.segundoproyectodatos1;
+    opens MainClass to javafx.fxml;
+    exports MainClass;
+    exports Servidor;
+    opens Servidor to javafx.fxml;
+    exports Admin_y_Usuario;
+    opens Admin_y_Usuario to javafx.fxml;
+    exports Clases_auxiliares;
+    opens Clases_auxiliares to javafx.fxml;
 }

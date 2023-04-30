@@ -1,4 +1,4 @@
-package sample.segundoproyectodatos1;
+package Admin_y_Usuario;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,6 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class MasterApp{
 
@@ -39,7 +41,7 @@ public class MasterApp{
     /**
      * Se encarga de cargar los elementos gráficos de la interfaz
      */
-    public void elementosGraficos() {
+    public void elementosGraficos() throws IOException {
         paneMain = new Pane();
 
         //Panel de la zona superior, separa la barra de opciones de los otros Pane
