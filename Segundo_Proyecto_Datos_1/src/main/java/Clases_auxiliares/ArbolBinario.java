@@ -2,79 +2,72 @@ package Clases_auxiliares;
 
 public class ArbolBinario {
 
-    Nodo raiz;
+    Nodo root;
 
     public ArbolBinario(){
 
-        this.raiz = null;  //Empieza sin ningún valor
+        this.root = null;  //Empieza sin ningún valor
 
     }
 
-    public void insertarNodo(Nodo nodo){
+    public void insertar(Nodo nuevoNodo) {
 
-        //Verifica si la raíz esta vacía
-        if (this.raiz == null){
-            this.raiz = nodo;
-        }
-
-        else {
-            Nodo nodoRaiz = raiz;
-            /*
-            Se convierte los caracteres de forma que puedan ser leídos con un valor de jerarquía.
-
-            Se evalua si el nuevo nodo es mayor a la raíz o menor a la raíz
-             */
-
-            char mensaje = 'i';
-
+        if (this.root == null) {
+            this.root = nuevoNodo;
+        } else {
+            Nodo nodoActual = this.root;
             while (true) {
 
-                //System.out.println(Integer.parseInt(nodo.getValor().getUsername()));
+                int valor = nuevoNodo.getValor().getUsername().compareTo(nodoActual.getValor().getUsername());
 
-                int result = nodo.getValor().getUsername().compareTo(nodoRaiz.getValor().getUsername());
-
-                //Si el Nodo es mayor a la raíz, este irá a la derecha
-                //if (Integer.parseInt(nodo.getValor().getUsername()) > Integer.parseInt(nodoRaiz.getValor().getUsername())) {
-                if (result > 0){
-
-                    //Si el Nodo a la derecha está vacío, asigne un nuevo valor y salga del ciclo
-                    if (nodoRaiz.getDerecha() == null){
-
-                        nodoRaiz.setDerecha(nodo);
+                //Si el nuevo Nodo es menor al Nodo actual, va para la izquierda, si no, para la derecha
+                if (valor < 0) {
+                    if (nodoActual.getIzquierda() == null) {
+                        nodoActual.setIzquierda(nuevoNodo);
                         break;
                     }
-
-                    //Si el Nodo derecho no está vacío, baje a él y siga comparando.
-                    nodoRaiz = nodoRaiz.getDerecha();
-
-                }
-
-                //Si el Nodo es menor a la raíz, este irá a la derecha
-                else if (result < 0){
-
-                    //Si el Nodo a la izquierda está vacío, asigne un nuevo valor y salga del ciclo
-                    if (nodoRaiz.getIzquierda() == null){
-                        nodoRaiz.setIzquierda(nodo);
+                    nodoActual = nodoActual.getIzquierda();
+                } else {
+                    if (nodoActual.getDerecha() == null) {
+                        nodoActual.setDerecha(nuevoNodo);
                         break;
                     }
-
-                    //Si el Nodo izquierdo no está vacío, baje a él y siga comparando.
-                    nodoRaiz = nodoRaiz.getIzquierda();
-
+                    nodoActual = nodoActual.getDerecha();
                 }
-
             }
-
         }
-
     }
 
-    public boolean buscarPersona(String user,String contra){
+    /*
+    Busca una persona con base en el valor jerárquico de los caracteres
+     */
+    public boolean revisarLogin(String username) {
+        Nodo nodoActual = this.root;
+
+
+        while (nodoActual != null) {
+
+            int valor = username.compareTo(nodoActual.getValor().getUsername());
+            System.out.println(nodoActual.getValor().getUsername());
+
+            if (valor == 0) {
+                return true;
+
+            } else if (valor < 0) {
+                nodoActual = nodoActual.getIzquierda();
+
+            } else {
+                nodoActual = nodoActual.getDerecha();
+            }
+        }
+
+        return false;
+    }
+
+    public boolean revisarLogin(String user, String contra){
 
         //Nodo auxiliar que recorrerá el árbol
-        Nodo actual = raiz;
-
-
+        Nodo actual = root;
 
         //Si el usuario ingresado es igual al usuario guardado en algún nodo
         while (true) {
@@ -104,13 +97,139 @@ public class ArbolBinario {
             }
         }
 
-        //Si llega hasta acá es porque no encontró el usuario en los Nodos
-        //return false;
+    }
 
+    public void modificarPersona(String user,String newUser,String newPassword){
+        //Nodo auxiliar que recorrerá el árbol
+        Nodo actual = root;
+
+        //Si el usuario ingresado es igual al usuario guardado en algún nodo
+        while (true) {
+            //Compara repetidas veces el valor de actual y user para saber si debe ir por los subarboles de la derecha o izquierda
+            int result = actual.getValor().getUsername().compareTo(user);
+
+            System.out.println("Nodo actual: " + actual.getValor().getUsername());
+
+            if (actual.getValor().getUsername().equals(user)) {
+
+                actual.getValor().setUsername(newUser);
+                actual.getValor().setPassword(newPassword);
+                return;
+
+            } else if (result < 0) {
+                System.out.println("Derecha");
+                if (actual.getDerecha() == null){
+                    System.out.println("No se encontro yendo a la derecha");
+                    return;
+                }
+                actual = actual.getDerecha();
+            } else {
+                System.out.println("Izquierda");
+                if (actual.getIzquierda() == null){
+                    System.out.println("No se encontró yendo a la izquierda");
+                    return;
+                }
+                actual = actual.getIzquierda();
+            }
+        }
+    }
+
+    public void remove(String key) {
+        Nodo current = root;
+        Nodo parent = root;
+        boolean isLeftChild = true;
+
+        /*
+        Ejecuta mientras el current no sea nulo y el elemento buscado no coincida con algún Nodo
+         */
+        while (current != null && !current.getValor().getUsername().equals(key)) {
+            parent = current;
+
+            if (key.compareTo(current.getValor().getUsername()) < 0) {
+                isLeftChild = true;
+                current = current.getIzquierda();
+            } else {
+                isLeftChild = false;
+                current = current.getDerecha();
+            }
+        }
+
+        if (current == null) {
+            return;
+        }
+
+        /*
+        Pregunta si es un Nodo hoja
+         */
+        if (current.getIzquierda() == null && current.getDerecha() == null) {
+            if (current == root) {
+                root = null;
+            } else if (isLeftChild) {
+                parent.setIzquierda(null);
+            } else {
+                parent.setDerecha(null);
+            }
+        }
+        /*
+        Pregunta si solo tiene un hijo a la derecha
+         */
+        else if (current.getIzquierda() == null) {
+            if (current == root) {
+                root = current.getDerecha();
+            } else if (isLeftChild) {
+                parent.setIzquierda(current.getDerecha());
+            } else {
+                parent.setDerecha(current.getDerecha());
+            }
+        }
+        /*
+        Pregunta si solo tiene un hijo a la izquierda
+         */
+        else if (current.getDerecha() == null) {
+            if (current == root) {
+                root = current.getIzquierda();
+            } else if (isLeftChild) {
+                parent.setIzquierda(current.getIzquierda());
+            } else {
+                parent.setDerecha(current.getIzquierda());
+            }
+        }
+        /*
+        Caso donde tiene 2 Nodos hijos
+         */
+        else {
+            Nodo successor = getSuccessor(current);
+
+            if (current == root) {
+                root = successor;
+            } else if (isLeftChild) {
+                parent.setIzquierda(successor);
+            } else {
+                parent.setDerecha(successor);
+            }
+
+            successor.setIzquierda(current.getIzquierda());
+        }
 
     }
 
+    private Nodo getSuccessor(Nodo node) {
+        Nodo successorParent = node;
+        Nodo successor = node;
+        Nodo current = node.getDerecha();
 
+        while (current != null) {
+            successorParent = successor;
+            successor = current;
+            current = current.getIzquierda();
+        }
 
+        if (successor != node.getDerecha()) {
+            successorParent.setIzquierda(successor.getDerecha());
+            successor.setDerecha(node.getDerecha());
+        }
+
+        return successor;
+    }
 
 }

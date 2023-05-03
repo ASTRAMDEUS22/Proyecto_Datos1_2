@@ -1,5 +1,6 @@
 package Admin_y_Usuario;
 
+import Clases_auxiliares.Message;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -8,10 +9,45 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 
-public class MasterApp{
+public class MasterApp implements Runnable{
+
+    //Cosas relacionadas al conectarse al servidor
+    Socket socket;
+
+    //Puente de salida de mensajes entre el cliente y server
+    ObjectOutputStream out;
+
+    public MasterApp() {
+
+        try {
+
+            //Inicializa el socket en un host y puerto específico
+            this.socket = new Socket("192.168.1.246", 1234);
+
+            //Inicializa el envio de información
+            this.out = new ObjectOutputStream(socket.getOutputStream());
+
+            //Crea un hilo
+            Thread hilo = new Thread(this);
+            hilo.start();
+
+            //Prueba de respuesta del server
+            mensajePrueba();
+
+
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+
 
     //Definir objetos de la interfaz
 
@@ -199,4 +235,58 @@ public class MasterApp{
 
 
     }
+
+    public void mensajePrueba(){
+        Message message = new Message("Borre eso","3","3");
+
+        try {
+            out.writeObject(message);
+            System.out.println("Se envía mensaje al Server");
+
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+    /**
+     * Metodo que ejecuta la interfaz de Runnable
+     */
+    @Override
+    public void run(){
+
+        try {
+            while (true){
+
+                //Recibe las respuestas del server
+                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+                //Lee la info del server
+                Message message = (Message) in.readObject();
+
+                if (message.getNombreMetodo().equals("Hola")){
+                    System.out.println("MasterApp ha recibido una respuesta del server");
+                }
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+        }catch (IOException | ClassNotFoundException e){
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
 }

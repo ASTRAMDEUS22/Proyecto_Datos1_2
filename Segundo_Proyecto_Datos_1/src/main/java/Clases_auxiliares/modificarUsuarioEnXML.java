@@ -23,7 +23,7 @@ import static javax.script.ScriptEngine.FILENAME;
 public class modificarUsuarioEnXML {
 
 
-    private static void modificarUsuarioEnXML(String username, String newUsername, String newPassword) {
+/*    private static void modificarUsuarioEnXML(String username, String newUsername, String newPassword) {
         try {
             File file = new File(FILENAME);
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -126,6 +126,6 @@ public class modificarUsuarioEnXML {
             e.printStackTrace();
         }
     }
-
+*/
 
 }

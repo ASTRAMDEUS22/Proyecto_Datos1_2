@@ -1,5 +1,6 @@
 package Admin_y_Usuario;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -15,7 +16,42 @@ import Clases_auxiliares.Platillo;
 import java.io.*;
 import java.net.Socket;
 
-public class ClientApp{
+public class ClientApp implements Runnable{
+
+    //Socket del cliente
+    Socket socket;
+
+    //Recibir y enviar un Objeto Mensaje
+    ObjectOutputStream out;
+    ObjectInputStream in;
+
+
+
+    public ClientApp(){
+
+        try {
+            //Inicializa el socket en un host y puerto específico
+            this.socket = new Socket("192.168.1.246",1234);
+
+            //Inicializa el envio y entrega de información
+            this.out = new ObjectOutputStream(socket.getOutputStream());
+            this.in = new ObjectInputStream(socket.getInputStream());
+
+            //Crea un hilo
+            Thread hilo = new Thread(this);
+            hilo.start();
+
+            //Se manda a crear una lista de platillos que son tomadas del json correspondiente
+            solicitarListaPlatillos();
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
 
     //Definir objetos de la interfaz
 
@@ -173,20 +209,50 @@ public class ClientApp{
         //System.out.println("solicitarLitaPlatillo");
         try {
 
-            Socket socket = new Socket("192.168.1.246",1234);
-
             Message message = new Message("obtenerListaPlatillos");
 
-            ObjectOutputStream envio_de_datos = new ObjectOutputStream(socket.getOutputStream());
+            out.writeObject(message);
+            System.out.println("Se manda mensaje al Servidor");
 
-            envio_de_datos.writeObject(message);
 
-            socket.close();
+
 
 
         }catch (IOException e){
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void run(){
+
+        try {
+
+            while (true){
+
+                //Leer info del server
+                Message message = (Message) in.readObject();
+
+                System.out.println("Mensaje del server: " + message.getNombreMetodo());
+
+
+
+
+            }
+
+
+
+
+
+
+
+
+        }catch (IOException | ClassNotFoundException e){
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
 
 }

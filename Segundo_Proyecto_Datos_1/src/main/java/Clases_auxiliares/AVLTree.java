@@ -2,6 +2,7 @@ package Clases_auxiliares;
 
 public class AVLTree {
     private AVLNode root;
+
     public void insert(int value) {
         AVLNode newNode = new AVLNode(value);
         root = insert(root, newNode);
