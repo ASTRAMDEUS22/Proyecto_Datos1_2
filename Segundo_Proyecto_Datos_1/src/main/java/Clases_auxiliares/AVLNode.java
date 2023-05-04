@@ -4,11 +4,11 @@ public class AVLNode {
 
     private int height;
     private int balanceFactor;
-    private int value;
+    private String value;
     private AVLNode left;
     private AVLNode right;
 
-    public AVLNode(int value) {
+    public AVLNode(String value) {
         this.value = value;
         this.height = 1;
         this.balanceFactor = 0;
@@ -32,11 +32,11 @@ public class AVLNode {
         this.balanceFactor = balanceFactor;
     }
 
-    public int getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(int value) { //cambiar a Usuario value cuando sirva
+    public void setValue(String value) { //cambiar a Usuario value cuando sirva
         this.value = value;
     }
 
