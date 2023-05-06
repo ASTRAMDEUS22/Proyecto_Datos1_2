@@ -1,6 +1,8 @@
 package Clases_auxiliares;
 
-public class Usuario {
+import java.io.Serializable;
+
+public class Usuario implements Serializable {
     private String username;
     private String password;
 
@@ -26,7 +28,12 @@ public class Usuario {
     }
 
     @Override
+    public String toString(){
+        return username;
+    }
+
+    /*@Override
     public String toString() {
         return "Usuario{" + "username=" + username + ", password=" + password + '}';
-    }
+    }*/
 }

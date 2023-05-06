@@ -4,9 +4,8 @@ import Clases_auxiliares.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
@@ -14,6 +13,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
+
 
 
 //Controlador de clientes
@@ -32,6 +33,9 @@ class ClientHandler extends Thread{
     //Arboles binarios
     ArbolBinario arbolBinarioAdmins;
     ArbolBinario arbolBinarioClient;
+
+    //Lista enlazada
+    ListaEnlazada listaEnlazada;
 
     public ClientHandler(Socket socket,DataInputStream entradaTexto,DataOutputStream salidaTexto,ObjectInputStream entradaObjects,ObjectOutputStream salidaObject) {
         this.socket = socket;
@@ -114,6 +118,7 @@ class ClientHandler extends Thread{
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document document = builder.parse(file);
             document.getDocumentElement().normalize();
+
             //Obtener lista de elementos con la etiqueta "user"
             NodeList nodeList = document.getElementsByTagName("user");
 
@@ -124,8 +129,6 @@ class ClientHandler extends Thread{
                     Element element = (Element) node;
                     String username = element.getElementsByTagName("username").item(0).getTextContent();
                     String password = element.getElementsByTagName("password").item(0).getTextContent();
-
-                    //System.out.println("usuario: " + username + "     " + "password: " + password);
 
                     //Se crea un Objeto usuario con el valor de la contraseña y usuario
                     Usuario usuario = new Usuario(username,password);
@@ -194,6 +197,55 @@ class ClientHandler extends Thread{
         }
     }
 
+    private void eliminarUsuarioDeXML(String username) {
+
+        /*if (usuarios.isEmpty()) {
+            System.out.println("No hay usuarios registrados.");
+            return;
+        }*/
+
+        listaEnlazada.eliminarNodo(username);
+        arbolBinarioAdmins.eliminarNodo(username);
+        boolean existe=  listaEnlazada.devolverElemento(username);
+        System.out.println(existe);
+
+        try {
+            File file = new File("C:\\Users\\josth\\OneDrive\\Documentos\\Proyecto_Datos1_2\\Proyecto_Datos1_2\\Segundo_Proyecto_Datos_1\\Archivos XML\\AdminUsers.xml");
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(file);
+
+            Element root = (Element) document.getDocumentElement();
+            NodeList nodeList = document.getElementsByTagName("user");
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    String usernameElement = element.getElementsByTagName("username").item(0).getTextContent();
+                    if (usernameElement.equals(username)) {
+                        root.removeChild(node);
+                        break;
+                    }
+                }
+            }
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            DOMSource source = new DOMSource(document);
+
+            StreamResult result = new StreamResult(new FileOutputStream(file));
+            transformer.transform(source, result);
+
+            System.out.println("Usuario eliminado correctamente.");
+        } catch (ParserConfigurationException | SAXException | IOException  | TransformerException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean verificarExistenciaAdmins(String user, String password){
 
         //ArbolBinario arbolBinario = obtenerListaAdministradores();
@@ -212,10 +264,6 @@ class ClientHandler extends Thread{
 
     public boolean verificarExistenciaClientes(String user, String password){
 
-        //arbolBinarioClients = obtenerListaClientes();
-
-        //ArbolBinario arbolBinario = obtenerListaClientes();
-
         boolean resultado = arbolBinarioClient.revisarLogin(user, password);
 
         if (resultado){
@@ -227,6 +275,8 @@ class ClientHandler extends Thread{
         return false;
 
     }
+
+
 
 
 
@@ -283,8 +333,8 @@ class ClientHandler extends Thread{
                         System.out.println("Se respondió con éxito");
                     }
                 }
-
-                else if (message.getNombreMetodo().equals("Borre eso")){
+                //Ejemplo de como borrar un elemento de un árbol binario y del XML
+                /*else if (message.getNombreMetodo().equals("Borre eso")){
 
 
                     Message message1 = new Message("Hola");
@@ -292,7 +342,7 @@ class ClientHandler extends Thread{
                     boolean existe = arbolBinarioAdmins.revisarLogin(message.getUsuario());
                     System.out.println(existe);
                     //Se manda a borrar al usuario
-                    arbolBinarioAdmins.remove(message.getUsuario());
+                    arbolBinarioAdmins.eliminarNodo(message.getUsuario());
                     //Se verifica si se borro
                     boolean existe1 = arbolBinarioAdmins.revisarLogin(message.getUsuario());
                     System.out.println(existe1);
@@ -309,7 +359,41 @@ class ClientHandler extends Thread{
 
 
 
+                }*/
+
+                else if (message.getNombreMetodo().equals("obtenerListaUsers")){
+                    System.out.println(1);
+
+                    Message message1 = new Message("crearListaUsers");
+
+
+                    System.out.println(2);
+                    //Se genera la lista
+                    arbolBinarioAdmins.crearListaUsers();
+                    listaEnlazada = arbolBinarioAdmins.getListaEnlazada();
+                    message1.setListaEnlazada(listaEnlazada);
+
+                    System.out.println(3);
+
+                    System.out.println("Se trata de responder al masterapp");
+                    System.out.println(4);
+                    salidaObject.writeObject(message1);
+                    System.out.println(5);
+                    System.out.println("Se ha respondido con éxito");
+
                 }
+                else if(message.getNombreMetodo().equals("editarAdministrador")){
+
+
+
+                    modificarUsuarioAdmin(message.getUsuario(),message.getNewUsuario(),message.getNewPassword());
+                }
+                else if(message.getNombreMetodo().equals("eliminarAdministrador")){
+                    eliminarUsuarioDeXML(message.getUsuario());
+
+
+                }
+
 
 
             } catch (IOException | ClassNotFoundException e) {
@@ -339,7 +423,7 @@ public class ServerApp {
         Thread hilo = new Thread(arrancarServer);
         hilo.start();
 
-        System.out.println("*Sonidos de motor arrancando*");
+        System.out.println("*Server noises turning on*");
 
     }
 

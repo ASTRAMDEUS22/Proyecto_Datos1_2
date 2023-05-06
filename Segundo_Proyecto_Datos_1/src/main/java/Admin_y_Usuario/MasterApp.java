@@ -1,6 +1,11 @@
 package Admin_y_Usuario;
 
+import Clases_auxiliares.ListaEnlazada;
 import Clases_auxiliares.Message;
+import Clases_auxiliares.Nodo;
+import Clases_auxiliares.Usuario;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -36,8 +41,7 @@ public class MasterApp implements Runnable{
             Thread hilo = new Thread(this);
             hilo.start();
 
-            //Prueba de respuesta del server
-            mensajePrueba();
+
 
 
         }catch (IOException e){
@@ -51,9 +55,16 @@ public class MasterApp implements Runnable{
 
     //Definir objetos de la interfaz
 
+    //Lista de personas de ejemplo
+    ObservableList<Usuario> personas = FXCollections.observableArrayList();
+
+    ListView<Usuario> listaPersonas = new ListView<>(personas);
+
+
+
     //Labels
     Label labelAgregarAdministrador,
-            labelPrueba2;
+            labelUserSelect;
 
     //Boton de opciones
     ComboBox<String> menuButton;
@@ -62,17 +73,23 @@ public class MasterApp implements Runnable{
     Pane paneMain,paneSuperior,paneOpcion1,paneOpcion2;
 
     //Cajas de texto
-    TextField nombreUsuario,passwordUsuario;
+    TextField userField_Pane1,
+            passWordField_Pane1,
+            userField_Pane2,
+            passWordField_Pane2;
 
     //TabPane y Tab
     TabPane tabPane;
     Tab tab1,tab2;
 
     //Botones
-    Button botonAgregarAdministrador;
+    Button botonAgregarAdministrador,botonEliminarAdministrador,botonEditarAdministrador;
 
     //Stage
     Stage stage = new Stage();
+
+    //Indice de un elemento seleccionado de la lista
+    int index;
 
     /**
      * Se encarga de cargar los elementos gráficos de la interfaz
@@ -120,9 +137,6 @@ public class MasterApp implements Runnable{
 
 
         //Elementos correspondientes al Tab 1
-        labelPrueba2 = new Label();
-        labelPrueba2.setText("ME QUIERO MUERTAR");
-
 
         //Elementos correspondientes al Tab 2
 
@@ -135,6 +149,8 @@ public class MasterApp implements Runnable{
                 "Agregar nuevo administrador",
                 "Editar o eliminar un administrador"
         );
+
+        //Detecta cuando un elemento de la lista es seleccionado
         menuButton.setOnAction(new EventHandler<ActionEvent>() {  //Detecta un evento al seleccionar un Item del ComboBox
             @Override
             public void handle(ActionEvent event) {
@@ -157,35 +173,68 @@ public class MasterApp implements Runnable{
         labelAgregarAdministrador.setTranslateX(570);
         labelAgregarAdministrador.setTranslateY(175);
 
-        nombreUsuario = new TextField();
-        nombreUsuario.setPromptText("Nuevo usuario");
-        nombreUsuario.setStyle("-fx-alignment: center");
-        nombreUsuario.setTranslateX(570);
-        nombreUsuario.setTranslateY(250);
+        userField_Pane1 = new TextField();
+        userField_Pane1.setPromptText("Nuevo usuario");
+        userField_Pane1.setStyle("-fx-alignment: center");
+        userField_Pane1.setTranslateX(570);
+        userField_Pane1.setTranslateY(250);
 
-        passwordUsuario = new TextField();
-        passwordUsuario.setPromptText("Contraseña");
-        passwordUsuario.setStyle("-fx-alignment: center");
-        passwordUsuario.setTranslateX(570);
-        passwordUsuario.setTranslateY(300);
+        passWordField_Pane1 = new TextField();
+        passWordField_Pane1.setPromptText("Contraseña");
+        passWordField_Pane1.setStyle("-fx-alignment: center");
+        passWordField_Pane1.setTranslateX(570);
+        passWordField_Pane1.setTranslateY(300);
 
         botonAgregarAdministrador = new Button();
         botonAgregarAdministrador.setText("Agregar");
         botonAgregarAdministrador.setTranslateX(590);
         botonAgregarAdministrador.setTranslateY(370);
 
-
         //Elementos correspondientes al paneOpcion2
 
-        //Lista de personas de ejemplo
-        ObservableList<String> personas = FXCollections.observableArrayList(
-                "Persona1","Persona2","Persona3","Persona4"
-        );
+        userField_Pane2 = new TextField();
+        userField_Pane2.setPromptText("Nuevo usuario");
+        userField_Pane2.setStyle("-fx-alignment: center");
+        userField_Pane2.setTranslateX(570);
+        userField_Pane2.setTranslateY(250);
 
-        ListView<String> listaPersonas = new ListView<>(personas);
-        listaPersonas.setTranslateX(200);
-        listaPersonas.setTranslateY(200);
-        
+        passWordField_Pane2 = new TextField();
+        passWordField_Pane2.setPromptText("Contraseña");
+        passWordField_Pane2.setStyle("-fx-alignment: center");
+        passWordField_Pane2.setTranslateX(570);
+        passWordField_Pane2.setTranslateY(300);
+
+        botonEliminarAdministrador = new Button();
+        botonEliminarAdministrador.setText("Eliminar");
+        botonEliminarAdministrador.setOnAction(e -> eliminarAdministrador(labelUserSelect.getText()));
+        botonEliminarAdministrador.setTranslateX(400);
+        botonEliminarAdministrador.setTranslateY(260);
+
+
+        labelUserSelect = new Label();
+        labelUserSelect.setText("GG IZZI PIZZI");
+        labelUserSelect.setTranslateX(400);
+        labelUserSelect.setTranslateY(200);
+
+
+
+
+        //ListView
+        listaPersonas.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Usuario>(){
+            @Override
+            public void changed(ObservableValue<? extends Usuario> observableValue,Usuario s,Usuario elementoSeleccionado){
+                labelUserSelect.setText(elementoSeleccionado.getUsername());
+                index = listaPersonas.getSelectionModel().getSelectedIndex();
+            }
+        });
+
+        listaPersonas.setMaxHeight(300);
+
+        //Ubicación de la ListView
+        listaPersonas.setTranslateX(50);
+        listaPersonas.setTranslateY(50);
+
+
 
 
         //Se agregan los elementos a un Pane funcionando como barra superior
@@ -196,15 +245,18 @@ public class MasterApp implements Runnable{
         //Se agregan los elementos gráficos a un panel
         paneOpcion1.getChildren().addAll(
                 labelAgregarAdministrador,
-                nombreUsuario,
-                passwordUsuario,
+                userField_Pane1,
+                passWordField_Pane1,
                 botonAgregarAdministrador
         );
 
         //Se agregan elementos gráficos a un panel de opciones
         paneOpcion2.getChildren().addAll(
-                labelPrueba2,
-                listaPersonas
+                labelUserSelect,
+                listaPersonas,
+                botonEliminarAdministrador,
+                userField_Pane2,
+                passWordField_Pane2
         );
 
         //Se agregan todos los Pane a un Pane principal
@@ -224,6 +276,9 @@ public class MasterApp implements Runnable{
                 tab2
         );
 
+        //Se le pide al servidor que envie una lista con la cuál se pueda formar la listView
+        cargarListaUsers();
+
 
 
         //Escena donde se mostrará los elementos
@@ -236,8 +291,58 @@ public class MasterApp implements Runnable{
 
     }
 
-    public void mensajePrueba(){
-        Message message = new Message("Borre eso","3","3");
+    public void editarAdministrador(String user,String newUser,String newPassword){
+
+        Message message = new Message("editarAdministrador",user,newUser,newPassword);
+
+        try {
+            out.writeObject(message);
+            System.out.println("Se mando el mensaje");
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void eliminarAdministrador(String user){
+        //System.out.println(user);
+
+        Message message = new Message("eliminarAdministrador",user);
+
+        try {
+            out.writeObject(message);
+            System.out.println("Se mando el mensaje");
+
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+
+        personas.remove(index);
+
+
+    }
+
+    public void crearListView(ListaEnlazada listaEnlazada){
+
+        int size = listaEnlazada.getSize();
+
+        Nodo current = listaEnlazada.getHead();
+
+        for (int i = 0; i < size;i++){
+
+            personas.add(current.getValor());
+
+            current = current.getNext();
+
+        }
+
+
+        listaEnlazada.verElementos();
+    }
+
+    public void cargarListaUsers(){
+        Message message = new Message("obtenerListaUsers");
+        System.out.println("Se trata de asignar un valor al mensaje");
 
         try {
             out.writeObject(message);
@@ -267,6 +372,8 @@ public class MasterApp implements Runnable{
 
                 if (message.getNombreMetodo().equals("Hola")){
                     System.out.println("MasterApp ha recibido una respuesta del server");
+                } else if (message.getNombreMetodo().equals("crearListaUsers")) {
+                    crearListView(message.getListaEnlazada());
                 }
 
             }

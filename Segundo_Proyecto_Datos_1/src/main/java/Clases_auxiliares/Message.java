@@ -1,9 +1,13 @@
 package Clases_auxiliares;
 
 import Clases_auxiliares.Platillo;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ListView;
 
+import javax.crypto.MacSpi;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Message implements Serializable {
 
@@ -19,33 +23,31 @@ public class Message implements Serializable {
         this.nombreMetodo = nombreMetodo;
     }
 
-    public Message(String nombreMetodo, ObservableList<Platillo> listaPlatillos){
+    public Message(String nombreMetodo,Nodo nodo){
         this.nombreMetodo = nombreMetodo;
-        this.listaPlatillos = listaPlatillos;
+        this.nodo = nodo;
+    }
 
+    public Message(String nombreMetodo,String usuario){
+        this.nombreMetodo = nombreMetodo;
+        this.usuario = usuario;
+
+    }
+
+    public Message(String nombreMetodo,String user,String newUser,String newPassword){
+        this.nombreMetodo = nombreMetodo;
+        this.usuario = user;
+        this.newUsuario = newUser;
+        this.newPassword = newPassword;
     }
 
     //Definir atributos
-    private String nombreMetodo,usuario,password;
-    private int identificador = 2;
-    private ObservableList<Platillo> listaPlatillos;
-
-
-
-    public int getIdentificador() {
-        return identificador;
-    }
-
-    public void setIdentificador(int identificador) {
-        this.identificador = identificador;
-    }
+    private String nombreMetodo,usuario,password,newUsuario,newPassword;
+    private Nodo nodo;
+    private ListaEnlazada listaEnlazada;
 
     public String getNombreMetodo() {
         return nombreMetodo;
-    }
-
-    public void setNombreMetodo(String nombreMetodo) {
-        this.nombreMetodo = nombreMetodo;
     }
 
     public String getUsuario() {
@@ -56,15 +58,23 @@ public class Message implements Serializable {
         return password;
     }
 
-    public ObservableList<Platillo> getListaPlatillos() {
-        return listaPlatillos;
+    public Nodo getNodo() {
+        return nodo;
     }
 
-    /*public ObservableList<Platillo> getListaPlatillos() {
-        return listaPlatillos;
+    public ListaEnlazada getListaEnlazada() {
+        return listaEnlazada;
     }
 
-    public void setListaPlatillos(ObservableList<Platillo> listaPlatillos) {
-        this.listaPlatillos = listaPlatillos;
-    }*/
+    public void setListaEnlazada(ListaEnlazada listaEnlazada) {
+        this.listaEnlazada = listaEnlazada;
+    }
+
+    public String getNewUsuario() {
+        return newUsuario;
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
 }

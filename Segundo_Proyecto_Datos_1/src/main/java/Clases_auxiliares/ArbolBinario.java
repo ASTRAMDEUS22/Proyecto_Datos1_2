@@ -1,8 +1,18 @@
 package Clases_auxiliares;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ListView;
+
+import java.util.UUID;
+
 public class ArbolBinario {
 
     Nodo root;
+
+    ListaEnlazada listaEnlazada = new ListaEnlazada();
+
+    //ListView<Usuario> listView = new ListView<>(personas);
 
     public ArbolBinario(){
 
@@ -36,32 +46,6 @@ public class ArbolBinario {
                 }
             }
         }
-    }
-
-    /*
-    Busca una persona con base en el valor jerárquico de los caracteres
-     */
-    public boolean revisarLogin(String username) {
-        Nodo nodoActual = this.root;
-
-
-        while (nodoActual != null) {
-
-            int valor = username.compareTo(nodoActual.getValor().getUsername());
-            System.out.println(nodoActual.getValor().getUsername());
-
-            if (valor == 0) {
-                return true;
-
-            } else if (valor < 0) {
-                nodoActual = nodoActual.getIzquierda();
-
-            } else {
-                nodoActual = nodoActual.getDerecha();
-            }
-        }
-
-        return false;
     }
 
     public boolean revisarLogin(String user, String contra){
@@ -134,7 +118,7 @@ public class ArbolBinario {
         }
     }
 
-    public void remove(String key) {
+    public void eliminarNodo(String key) {
         Nodo current = root;
         Nodo parent = root;
         boolean isLeftChild = true;
@@ -231,5 +215,76 @@ public class ArbolBinario {
 
         return successor;
     }
+
+    /**
+     * Método que se encarga de crear una recursión para añadirle a una ObservableList los users del árbol binario, se
+     * llama al método recursivo con un nodo inicial que es la raíz
+     * @return ObservableList de users
+     */
+    public void crearListaUsers(){
+
+        recursiAgregaUsers(this.root);
+
+
+
+    }
+
+    /**
+     * Metodo recursivo que se encarga de agregar a la ObservableList todos los nodos del árbol binario, preguntando si
+     * el nodo actual es nulo, indicando que llego al final de alguno de los subárboles, deteniendo la recursividad,
+     * en caso contrario, añada el valor del nodo actual a la lista y baje a los siguientes nodos
+     * @param current
+     */
+    private void recursiAgregaUsers(Nodo current){
+
+        if (current == null){
+            return;
+        }
+
+        //personas.add(current.getValor());
+        listaEnlazada.insertarNuevoNodo(current);
+
+        recursiAgregaUsers(current.getDerecha());
+        recursiAgregaUsers(current.getIzquierda());
+
+    }
+
+    public ListaEnlazada getListaEnlazada() {
+        return listaEnlazada;
+    }
+
+    /*public Nodo buscarPadre(Nodo nodo){
+
+        Nodo current = this.root;
+
+        while (true){
+
+            int valor = current.getValor().getUsername().compareTo(nodo.getValor().getUsername());
+
+            //Se pregunta si es la raíz
+            if (current.getValor().getUsername().equals(this.root.getValor().getUsername())){
+                return null;  //Devuelve que no hay padre ya que es la raíz
+            }
+
+            //Preguntamos si alguno de los Nodos hijos es el que estamos buscando
+            if (current.getValor().getUsername().equals(current.getDerecha().getValor().getUsername())){
+                return current;  //Devuelve el padre
+            }
+            else if (current.getValor().getUsername().equals(current.getIzquierda().getValor().getUsername())) {
+                return current;  //Devuelve el padre
+            }
+
+            if (valor < 0){
+                current = current.getDerecha();  //Avanza a la derecha
+
+            }else {
+                current = current.getIzquierda();  //Avanza a la izquierda
+            }
+
+
+        }
+
+
+    }*/
 
 }

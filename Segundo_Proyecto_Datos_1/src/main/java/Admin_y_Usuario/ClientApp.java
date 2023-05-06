@@ -75,6 +75,7 @@ public class ClientApp implements Runnable{
 
     //Lista de personas de ejemplo
     ObservableList<Platillo> listaPlatillos = FXCollections.observableArrayList();
+    ListView<Platillo> listViewPlatillos = new ListView<>(listaPlatillos);
 
 
     public void elementosGraficos() throws IOException {
@@ -130,14 +131,9 @@ public class ClientApp implements Runnable{
         paneMenu.setTranslateX(50);
         paneMenu.setTranslateY(50);
 
-        /*Se va a crear un Socket que comunicará la ClientApp y el ServerApp para crear la lista de Platillos
-        obtenidos a partir del archivo JSON.
-         */
-       //solicitarListaPlatillos();
 
 
-        ListView<Platillo> listViewPlatillos = new ListView<>(listaPlatillos);
-
+        //Instancias temporales para probar funcionamiento de la listView
         Platillo platillo1 = new Platillo("Arroz con Pollo",2500,1200);
         Platillo platillo2 = new Platillo("Olla de carne",6000,3400);
         Platillo platillo3 = new Platillo("Batido de fresa",1200,2500);
@@ -158,7 +154,7 @@ public class ClientApp implements Runnable{
         listViewPlatillos.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Platillo>() {
             @Override
             public void changed(ObservableValue<? extends Platillo> observableValue, Platillo s, Platillo elementoSeleccionado) {
-
+                //Hace una acción cuando se selecciona un elemento de la lista
                 //Se cambian los textos de los Labels por los del Objeto de la lista seleccionado
                 labelNombrePlatillo.setText(elementoSeleccionado.getNombrePlatillo());
                 labelCantidadCaloriasPlatillo.setText(String.valueOf(elementoSeleccionado.getCalorias()));
@@ -166,15 +162,10 @@ public class ClientApp implements Runnable{
             }
         });
 
-
         listViewPlatillos.setMaxHeight(375);
         listViewPlatillos.setMinHeight(350);
         listViewPlatillos.setTranslateX(25);
         listViewPlatillos.setTranslateY(25);
-
-
-        //crearListaEjemplos();  //Crea temporalmente una lista de personas
-
 
 
         //Se agregan estos elementos al paneMenu
@@ -223,6 +214,9 @@ public class ClientApp implements Runnable{
         }
     }
 
+    /**
+     * Metodo que se ejecuta constantemente a la espera de algún mensaje por parte del servidor
+     */
     @Override
     public void run(){
 

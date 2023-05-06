@@ -2,7 +2,9 @@ package Clases_auxiliares;
 
 import javafx.application.Platform;
 
-public class Nodo {
+import java.io.Serializable;
+
+public class Nodo implements Serializable {
 
     private Usuario valor;
     private Nodo derecha;
@@ -10,6 +12,7 @@ public class Nodo {
 
     private Nodo next;
     private Platillo platillo;
+    private Usuario usuario;
 
     /**
      * Constructor del objeto que almacenará usuarios
@@ -98,5 +101,13 @@ public class Nodo {
      */
     public void setPlatillo(Platillo platillo) {
         this.platillo = platillo;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }
