@@ -69,11 +69,16 @@ public class AVLTree {
 
     public void delete(String value) {
         root = deleteHelper(root, value);
+        if (root == null) {
+            // Tree is empty
+            return;
+        }
     }
 
     private AVLNode deleteHelper(AVLNode node, String value) {
         if (node == null) {
-            return node; //node siempre es null?
+
+            return null;
         }
         int compareResult = value.compareTo(node.getValue());
         if (compareResult < 0) {
