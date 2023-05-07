@@ -14,7 +14,7 @@ import java.io.File;
 
 
 public class AgregarUsuario {
-    private static void agregarUsuarioAXML(String username, String password) {
+    /*private static void agregarUsuarioAXML(String username, String password) {
         try {
             File file = new File("C:\\Users\\XPC\\OneDrive\\Documents\\GitHub\\Proyecto_Datos1_2\\Segundo_Proyecto_Datos_1\\.idea\\Users.xml");
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -46,6 +46,6 @@ public class AgregarUsuario {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 }

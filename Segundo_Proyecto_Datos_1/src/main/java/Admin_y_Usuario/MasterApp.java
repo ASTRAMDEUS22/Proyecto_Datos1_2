@@ -26,6 +26,8 @@ public class MasterApp implements Runnable{
 
     //Puente de salida de mensajes entre el cliente y server
     ObjectOutputStream out;
+    //Puente de entrada de mensajes entre el cliente y server
+    ObjectInputStream in;
 
     public MasterApp() {
 
@@ -36,6 +38,9 @@ public class MasterApp implements Runnable{
 
             //Inicializa el envio de información
             this.out = new ObjectOutputStream(socket.getOutputStream());
+
+            //Recibe las respuestas del server
+            this.in = new ObjectInputStream(socket.getInputStream());
 
             //Crea un hilo
             Thread hilo = new Thread(this);
@@ -133,15 +138,6 @@ public class MasterApp implements Runnable{
         tab2.setText("Opciones de administrador");
         tab2.setClosable(false);  //Desactivar el cierre
 
-
-
-
-        //Elementos correspondientes al Tab 1
-
-        //Elementos correspondientes al Tab 2
-
-        //Elementos gráficos del paneOpción1
-
         //Menu de opciones
         menuButton = new ComboBox<>();
         menuButton.setPromptText("Herramientas");
@@ -149,6 +145,11 @@ public class MasterApp implements Runnable{
                 "Agregar nuevo administrador",
                 "Editar o eliminar un administrador"
         );
+
+
+        //Elementos correspondientes al Tab 1
+
+        //Elementos correspondientes al Tab 2
 
         //Detecta cuando un elemento de la lista es seleccionado
         menuButton.setOnAction(new EventHandler<ActionEvent>() {  //Detecta un evento al seleccionar un Item del ComboBox
@@ -166,6 +167,11 @@ public class MasterApp implements Runnable{
 
             }
         });
+
+
+
+
+        //Elementos gráficos del paneOpción1
 
         //Creación de un nuevo administrador
         labelAgregarAdministrador = new Label();
@@ -187,8 +193,10 @@ public class MasterApp implements Runnable{
 
         botonAgregarAdministrador = new Button();
         botonAgregarAdministrador.setText("Agregar");
+        botonAgregarAdministrador.setOnAction(e -> agregarNuevoAdmin(userField_Pane1.getText(),passWordField_Pane1.getText()));
         botonAgregarAdministrador.setTranslateX(590);
         botonAgregarAdministrador.setTranslateY(370);
+
 
         //Elementos correspondientes al paneOpcion2
 
@@ -209,6 +217,16 @@ public class MasterApp implements Runnable{
         botonEliminarAdministrador.setOnAction(e -> eliminarAdministrador(labelUserSelect.getText()));
         botonEliminarAdministrador.setTranslateX(400);
         botonEliminarAdministrador.setTranslateY(260);
+
+        botonEditarAdministrador = new Button();
+        botonEditarAdministrador.setText("Editar");
+        botonEditarAdministrador.setOnAction(e -> editarAdministrador(
+                labelUserSelect.getText(),
+                userField_Pane2.getText(),
+                passWordField_Pane2.getText()
+        ));
+        botonEditarAdministrador.setTranslateX(570);
+        botonEditarAdministrador.setTranslateY(360);
 
 
         labelUserSelect = new Label();
@@ -255,6 +273,7 @@ public class MasterApp implements Runnable{
                 labelUserSelect,
                 listaPersonas,
                 botonEliminarAdministrador,
+                botonEditarAdministrador,
                 userField_Pane2,
                 passWordField_Pane2
         );
@@ -279,8 +298,6 @@ public class MasterApp implements Runnable{
         //Se le pide al servidor que envie una lista con la cuál se pueda formar la listView
         cargarListaUsers();
 
-
-
         //Escena donde se mostrará los elementos
         Scene masterApp = new Scene(tabPane,1200,700);
         stage.setResizable(false);
@@ -291,7 +308,24 @@ public class MasterApp implements Runnable{
 
     }
 
+    public void agregarNuevoAdmin(String user,String contra){
+        //Se crea un mensaje para el server
+        Message message = new Message("agregarNuevoAdmin",user,contra);
+
+        try {
+            out.writeObject(message);
+            System.out.println("Mensaje enviado");
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+
+        personas.add(new Usuario(user,contra));
+
+    }
+
     public void editarAdministrador(String user,String newUser,String newPassword){
+
+        System.out.println("Entro aqui con: " + user + " " + newUser + " " + newPassword);
 
         Message message = new Message("editarAdministrador",user,newUser,newPassword);
 
@@ -301,17 +335,22 @@ public class MasterApp implements Runnable{
         }catch (IOException e){
             throw new RuntimeException(e);
         }
+    }
+
+    public void editarPersonaLista(String user,String password){
+        System.out.println("Entra en editar persona");
+
+        personas.get(index).setUsername(user);
+        personas.get(index).setPassword(password);
 
     }
 
     public void eliminarAdministrador(String user){
-        //System.out.println(user);
 
         Message message = new Message("eliminarAdministrador",user);
 
         try {
             out.writeObject(message);
-            System.out.println("Se mando el mensaje");
 
         }catch (IOException e){
             throw new RuntimeException(e);
@@ -342,11 +381,9 @@ public class MasterApp implements Runnable{
 
     public void cargarListaUsers(){
         Message message = new Message("obtenerListaUsers");
-        System.out.println("Se trata de asignar un valor al mensaje");
 
         try {
             out.writeObject(message);
-            System.out.println("Se envía mensaje al Server");
 
         }catch (IOException e){
             throw new RuntimeException(e);
@@ -364,16 +401,16 @@ public class MasterApp implements Runnable{
         try {
             while (true){
 
-                //Recibe las respuestas del server
-                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
-
                 //Lee la info del server
                 Message message = (Message) in.readObject();
 
-                if (message.getNombreMetodo().equals("Hola")){
-                    System.out.println("MasterApp ha recibido una respuesta del server");
-                } else if (message.getNombreMetodo().equals("crearListaUsers")) {
+                if (message.getNombreMetodo().equals("crearListaUsers")) {
                     crearListView(message.getListaEnlazada());
+                }
+
+                else if (message.getNombreMetodo().equals("usuario modificado correctamente")){
+                    System.out.println("Entra acá");
+                    editarPersonaLista(message.getUsuario(),message.getPassword());
                 }
 
             }

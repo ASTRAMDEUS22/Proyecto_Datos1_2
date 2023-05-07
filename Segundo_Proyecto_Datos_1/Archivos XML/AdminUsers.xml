@@ -1,115 +1,78 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <users>
-        
+     
   
   <user>
-                
+          
     
     <username>Kenny</username>
-                
+          
     
     <password>GatitaMimosa</password>
-            
+         
   
   </user>
-        
+     
   
   <user>
-                
+          
     
     <username>Erick</username>
-                
+          
     
     <password>Cartman</password>
-            
+         
   
   </user>
-        
-  
-      
+     
   
   <user>
-                
+          
     
     <username>1</username>
-                
+          
     
     <password>1</password>
-            
+         
   
   </user>
-        
+     
   
   <user>
-                
-    
-    <username>Josthin</username>
-                
-    
-    <password>123</password>
-            
-  
-  </user>
-        
-  
-  <user>
-                
+          
     
     <username>Pedro</username>
-                
+          
     
-    <password>123</password>
-            
+    <password>741</password>
+         
   
   </user>
-        
+     
   
   <user>
-                
-    
-    <username>Alfonzo</username>
-                
-    
-    <password>123</password>
-            
-  
-  </user>
-        
-  
-  <user>
-                
-    
-    <username>Juan</username>
-                
-    
-    <password>4587</password>
-            
-  
-  </user>
-        
-  
-  <user>
-                
-    
-    <username>Diego</username>
-                
-    
-    <password>7155</password>
-            
-  
-  </user>
-        
-  
-  <user>
-                
+          
     
     <username>Marilyn</username>
-                
+          
     
     <password>66521</password>
-            
+         
   
   </user>
-    
+     
 
+  
+  <user>
+        
+    <username>Juan</username>
+        
+    <password>123456987</password>
+      
+  </user>
+  
+  <user>
+    <username>Josefino</username>
+    <password>4458</password>
+  </user>
 </users>

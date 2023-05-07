@@ -17,7 +17,7 @@ import java.net.Socket;
 
 public class Menu extends Application implements Runnable {
 
-    ServerApp servidorSocket = new ServerApp();  //Se arranca el servidor
+
 
     Socket socket;
     //Puente de salida
@@ -25,6 +25,7 @@ public class Menu extends Application implements Runnable {
 
 
     public Menu() throws IOException {
+        ServerApp servidorSocket = new ServerApp();  //Se arranca el servidor
 
         this.socket = new Socket("192.168.1.246",1234);
 

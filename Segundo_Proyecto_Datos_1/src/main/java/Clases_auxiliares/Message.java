@@ -23,11 +23,6 @@ public class Message implements Serializable {
         this.nombreMetodo = nombreMetodo;
     }
 
-    public Message(String nombreMetodo,Nodo nodo){
-        this.nombreMetodo = nombreMetodo;
-        this.nodo = nodo;
-    }
-
     public Message(String nombreMetodo,String usuario){
         this.nombreMetodo = nombreMetodo;
         this.usuario = usuario;

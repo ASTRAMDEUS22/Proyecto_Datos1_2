@@ -11,7 +11,9 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import java.io.File;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -19,10 +21,6 @@ import org.xml.sax.SAXException;
 
 //Controlador de clientes
 class ClientHandler extends Thread{
-
-    //Entrada de mensajes textuales
-    DataInputStream entradaTexto;
-    DataOutputStream salidaTexto;
 
     //Entrada de mensajes tipo Object
     ObjectInputStream entradaObjects;
@@ -37,11 +35,8 @@ class ClientHandler extends Thread{
     //Lista enlazada
     ListaEnlazada listaEnlazada;
 
-    public ClientHandler(Socket socket,DataInputStream entradaTexto,DataOutputStream salidaTexto,ObjectInputStream entradaObjects,ObjectOutputStream salidaObject) {
+    public ClientHandler(Socket socket,ObjectInputStream entradaObjects,ObjectOutputStream salidaObject) {
         this.socket = socket;
-
-        this.entradaTexto = entradaTexto;
-        this.salidaTexto = salidaTexto;
 
         this.entradaObjects = entradaObjects;
         this.salidaObject = salidaObject;
@@ -111,6 +106,7 @@ class ClientHandler extends Thread{
 
         ArbolBinario arbolBinario = new ArbolBinario();
 
+
         try {
             File file = new File("C:\\Users\\josth\\OneDrive\\Documentos\\Proyecto_Datos1_2\\Proyecto_Datos1_2\\Segundo_Proyecto_Datos_1\\Archivos XML\\AdminUsers.xml");
 
@@ -141,6 +137,7 @@ class ClientHandler extends Thread{
 
                     //Se agrega el Nodo al árbol binario
                     arbolBinario.insertar(nodo);
+
                 }
             }
         } catch (Exception e) {
@@ -151,7 +148,7 @@ class ClientHandler extends Thread{
 
     }
 
-    private static void modificarUsuarioAdmin(String username, String newUsername, String newPassword) {
+    private void modificarUsuarioAdmin(String username, String newUsername, String newPassword) {
         try {
             File file = new File("C:\\Users\\josth\\OneDrive\\Documentos\\Proyecto_Datos1_2\\Proyecto_Datos1_2\\Segundo_Proyecto_Datos_1\\Archivos XML\\AdminUsers.xml");
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -159,6 +156,28 @@ class ClientHandler extends Thread{
             Document document = builder.parse(file);
 
             NodeList nodeList = document.getElementsByTagName("user");
+
+            listaEnlazada.verElementos();
+
+
+
+            System.out.println("wewewewe" + username + " " + newUsername);
+
+            //Se elimina del árbol binario
+            arbolBinarioAdmins.eliminarNodo(username);
+
+            //Se crea un nuevo Nodo
+            Nodo nodo = new Nodo();
+            Usuario usuario = new Usuario(newUsername,newPassword);
+            nodo.setValor(usuario);
+
+            //Se agrega el nuevo nodo con los nuevos valores de usuario y contraseña
+            arbolBinarioAdmins.insertar(nodo);
+
+            //Se edita el elemento en la lista enlazada
+            listaEnlazada.editarElemento(username,newUsername,newPassword);
+
+            listaEnlazada.verElementos();
 
             for (int i = 0; i < nodeList.getLength(); i++) {
                 Node node = nodeList.item(i);
@@ -178,20 +197,66 @@ class ClientHandler extends Thread{
 
                         TransformerFactory transformerFactory = TransformerFactory.newInstance();
                         Transformer transformer = transformerFactory.newTransformer();
-                        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-                        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+                        //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                        //transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "1");
                         DOMSource source = new DOMSource(document);
 
                         StreamResult result = new StreamResult(file);
                         transformer.transform(source, result);
 
-                        System.out.println("Usuario modificado correctamente.");
-                        return;
+                        Message message = new Message("usuario modificado correctamente",newUsername,newPassword);
+
+                        salidaObject.writeObject(message);
+
                     }
                 }
             }
 
-            System.out.println("El usuario no existe.");
+            //System.out.println("El usuario no existe.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void agregarUsuarioXML(String username,String password){
+        try {
+            File file = new File("C:\\Users\\josth\\OneDrive\\Documentos\\Proyecto_Datos1_2\\Proyecto_Datos1_2\\Segundo_Proyecto_Datos_1\\Archivos XML\\AdminUsers.xml");
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(file);
+
+            Element root = (Element) document.getDocumentElement();
+
+            Element user = (Element) document.createElement("user");
+            Element usernameElement = (Element) document.createElement("username");
+            Element passwordElement = (Element)  document.createElement("password");
+
+            usernameElement.appendChild(document.createTextNode(username));
+            passwordElement.appendChild(document.createTextNode(password));
+
+            user.appendChild(usernameElement);
+            user.appendChild(passwordElement);
+
+            root.appendChild(user);
+
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "1");
+            DOMSource source = new DOMSource(document);
+
+            StreamResult result = new StreamResult(file);
+            transformer.transform(source, result);
+
+            Usuario usuario = new Usuario(username,password);
+            Nodo nodo = new Nodo();
+            nodo.setValor(usuario);
+
+            listaEnlazada.insertarNuevoNodo(nodo);
+            arbolBinarioAdmins.insertar(nodo);
+
+            System.out.println("Usuario agregado correctamente.");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -199,10 +264,7 @@ class ClientHandler extends Thread{
 
     private void eliminarUsuarioDeXML(String username) {
 
-        /*if (usuarios.isEmpty()) {
-            System.out.println("No hay usuarios registrados.");
-            return;
-        }*/
+
 
         listaEnlazada.eliminarNodo(username);
         arbolBinarioAdmins.eliminarNodo(username);
@@ -233,14 +295,14 @@ class ClientHandler extends Thread{
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
             Transformer transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            //transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            //transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "1");
             DOMSource source = new DOMSource(document);
 
             StreamResult result = new StreamResult(new FileOutputStream(file));
             transformer.transform(source, result);
 
-            System.out.println("Usuario eliminado correctamente.");
+
         } catch (ParserConfigurationException | SAXException | IOException  | TransformerException e) {
             e.printStackTrace();
         }
@@ -291,8 +353,6 @@ class ClientHandler extends Thread{
 
                 Message message = (Message) entradaObjects.readObject();  //Lee un objeto enviado desde el cliente
                 System.out.println("Mensaje cliente: " + message.getNombreMetodo());
-                System.out.println("Nombre: " + message.getUsuario());
-                System.out.println("Contraseña: " + message.getPassword());
 
                 String usuario = message.getUsuario();
                 String contra = message.getPassword();
@@ -313,8 +373,8 @@ class ClientHandler extends Thread{
                     }
 
                 }
-
                 else if (message.getNombreMetodo().equals("LoginClient")){
+
                     System.out.println("Se manda a revisar el login");
                     /*String user = mensaje.getUsuario();
                     String password = mensaje.getPassword();
@@ -333,67 +393,37 @@ class ClientHandler extends Thread{
                         System.out.println("Se respondió con éxito");
                     }
                 }
-                //Ejemplo de como borrar un elemento de un árbol binario y del XML
-                /*else if (message.getNombreMetodo().equals("Borre eso")){
-
-
-                    Message message1 = new Message("Hola");
-
-                    boolean existe = arbolBinarioAdmins.revisarLogin(message.getUsuario());
-                    System.out.println(existe);
-                    //Se manda a borrar al usuario
-                    arbolBinarioAdmins.eliminarNodo(message.getUsuario());
-                    //Se verifica si se borro
-                    boolean existe1 = arbolBinarioAdmins.revisarLogin(message.getUsuario());
-                    System.out.println(existe1);
-                    //Se intenta modificar una persona
-                    arbolBinarioAdmins.modificarPersona("Erick","Josthin","123");
-                    boolean existe2 = arbolBinarioAdmins.revisarLogin("Josthin");
-                    System.out.println(existe2);
-                    modificarUsuarioAdmin("2","Josthin","123");
-
-                    System.out.println("Se intenta responder al client");
-                    salidaObject.writeObject(message1);
-                    System.out.println("Se logro responder");
-
-
-
-
-                }*/
-
                 else if (message.getNombreMetodo().equals("obtenerListaUsers")){
-                    System.out.println(1);
 
                     Message message1 = new Message("crearListaUsers");
 
-
-                    System.out.println(2);
                     //Se genera la lista
                     arbolBinarioAdmins.crearListaUsers();
                     listaEnlazada = arbolBinarioAdmins.getListaEnlazada();
                     message1.setListaEnlazada(listaEnlazada);
 
-                    System.out.println(3);
-
                     System.out.println("Se trata de responder al masterapp");
-                    System.out.println(4);
+
                     salidaObject.writeObject(message1);
-                    System.out.println(5);
+
                     System.out.println("Se ha respondido con éxito");
 
                 }
                 else if(message.getNombreMetodo().equals("editarAdministrador")){
 
-
-
                     modificarUsuarioAdmin(message.getUsuario(),message.getNewUsuario(),message.getNewPassword());
+
                 }
                 else if(message.getNombreMetodo().equals("eliminarAdministrador")){
+
                     eliminarUsuarioDeXML(message.getUsuario());
 
+                }
+                else if (message.getNombreMetodo().equals("agregarNuevoAdmin")) {
+
+                    agregarUsuarioXML(message.getUsuario(), message.getPassword());
 
                 }
-
 
 
             } catch (IOException | ClassNotFoundException e) {
@@ -452,20 +482,16 @@ class ArrancarServer implements Runnable {
 
                 System.out.println("Un cliente se ha conectado: " + socket);
 
-                //Maneja entrada y salida de texto
-                DataInputStream inText = new DataInputStream(socket.getInputStream());
-                DataOutputStream outText = new DataOutputStream(socket.getOutputStream());
-
                 //Maneja entrada y salida de objetos
                 ObjectInputStream inObject = new ObjectInputStream(socket.getInputStream());
                 ObjectOutputStream outObject = new ObjectOutputStream(socket.getOutputStream());
 
-                Thread thread = new ClientHandler(socket, inText, outText, inObject, outObject);
+                Thread thread = new ClientHandler(socket, inObject, outObject);
                 thread.start();
 
 
             } catch (Exception e) {
-                //socket.close();
+                System.out.println("entro aqui el error");
                 throw new RuntimeException(e);
             }
         }

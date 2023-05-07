@@ -34,12 +34,14 @@ public class ArbolBinario {
                 if (valor < 0) {
                     if (nodoActual.getIzquierda() == null) {
                         nodoActual.setIzquierda(nuevoNodo);
+                        //System.out.println("El nodo a insertar en el árbol es: " + nuevoNodo.getValor().getUsername());
                         break;
                     }
                     nodoActual = nodoActual.getIzquierda();
                 } else {
                     if (nodoActual.getDerecha() == null) {
                         nodoActual.setDerecha(nuevoNodo);
+                        //System.out.println("El nodo a insertar en el árbol es: " + nuevoNodo.getValor().getUsername());
                         break;
                     }
                     nodoActual = nodoActual.getDerecha();
@@ -83,40 +85,6 @@ public class ArbolBinario {
 
     }
 
-    public void modificarPersona(String user,String newUser,String newPassword){
-        //Nodo auxiliar que recorrerá el árbol
-        Nodo actual = root;
-
-        //Si el usuario ingresado es igual al usuario guardado en algún nodo
-        while (true) {
-            //Compara repetidas veces el valor de actual y user para saber si debe ir por los subarboles de la derecha o izquierda
-            int result = actual.getValor().getUsername().compareTo(user);
-
-            System.out.println("Nodo actual: " + actual.getValor().getUsername());
-
-            if (actual.getValor().getUsername().equals(user)) {
-
-                actual.getValor().setUsername(newUser);
-                actual.getValor().setPassword(newPassword);
-                return;
-
-            } else if (result < 0) {
-                System.out.println("Derecha");
-                if (actual.getDerecha() == null){
-                    System.out.println("No se encontro yendo a la derecha");
-                    return;
-                }
-                actual = actual.getDerecha();
-            } else {
-                System.out.println("Izquierda");
-                if (actual.getIzquierda() == null){
-                    System.out.println("No se encontró yendo a la izquierda");
-                    return;
-                }
-                actual = actual.getIzquierda();
-            }
-        }
-    }
 
     public void eliminarNodo(String key) {
         Nodo current = root;
@@ -129,6 +97,8 @@ public class ArbolBinario {
         while (current != null && !current.getValor().getUsername().equals(key)) {
             parent = current;
 
+            //System.out.println("Current: " + current.getValor().getUsername() + " " + "key: " + key);
+
             if (key.compareTo(current.getValor().getUsername()) < 0) {
                 isLeftChild = true;
                 current = current.getIzquierda();
@@ -138,9 +108,13 @@ public class ArbolBinario {
             }
         }
 
+        System.out.println("El nodo encontrado en el árbol a eliminar es: " + current.getValor().getUsername());
+
         if (current == null) {
             return;
         }
+
+
 
         /*
         Pregunta si es un Nodo hoja
@@ -216,25 +190,14 @@ public class ArbolBinario {
         return successor;
     }
 
-    /**
-     * Método que se encarga de crear una recursión para añadirle a una ObservableList los users del árbol binario, se
-     * llama al método recursivo con un nodo inicial que es la raíz
-     * @return ObservableList de users
-     */
+
     public void crearListaUsers(){
 
         recursiAgregaUsers(this.root);
 
-
-
     }
 
-    /**
-     * Metodo recursivo que se encarga de agregar a la ObservableList todos los nodos del árbol binario, preguntando si
-     * el nodo actual es nulo, indicando que llego al final de alguno de los subárboles, deteniendo la recursividad,
-     * en caso contrario, añada el valor del nodo actual a la lista y baje a los siguientes nodos
-     * @param current
-     */
+
     private void recursiAgregaUsers(Nodo current){
 
         if (current == null){
@@ -243,6 +206,7 @@ public class ArbolBinario {
 
         //personas.add(current.getValor());
         listaEnlazada.insertarNuevoNodo(current);
+        System.out.println("Funcion agregarUsers: " + current.getValor().getUsername());
 
         recursiAgregaUsers(current.getDerecha());
         recursiAgregaUsers(current.getIzquierda());

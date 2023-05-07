@@ -91,12 +91,34 @@ public class ListaEnlazada implements Serializable {
 
     }
 
+    public void editarElemento(String user,String newUser,String newPassword){
+
+        Nodo current = this.head;
+
+        while (current != null){
+
+            if (current.getValor().getUsername().equals(user)){
+                current.getValor().setUsername(newUser);
+                current.getValor().setPassword(newPassword);
+                System.out.println("Se encontro el Nodo en la lista enlazada");
+                return;
+            }
+
+            current = current.getNext();
+
+
+        }
+
+        System.out.println("No se encontró a la persona");
+
+    }
+
     public void verElementos(){
 
         Nodo current = this.head;
 
         while (current != null){
-            //System.out.println(current.getValor().getUsername());
+            System.out.println(current.getValor().getUsername());
 
             current = current.getNext();
 
