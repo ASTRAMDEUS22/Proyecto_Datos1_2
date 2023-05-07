@@ -18,7 +18,7 @@ public class EliminarPJSON {
 
     public static void main(String[] args) {
 
-        // Leer el archivo JSON existente en un objeto JsonArray
+
         JsonArray jsonArray = null;
         try (Reader reader = new FileReader("C:\\Users\\XPC}\\OneDrive\\Documents\\GitHub\\Proyecto_Datos1_2\\Segundo_Proyecto_Datos_1\\Archvos JSON\\Platillos1.JSON")) {
             Gson gson = new Gson();
@@ -27,7 +27,7 @@ public class EliminarPJSON {
             e.printStackTrace();
         }
 
-        // Mostrar los platillos existentes
+        // MUESTRA los platillos existentes
         System.out.println("PLATILLOS EXISTENTES:");
         for (JsonElement jsonElement : jsonArray) {
             JsonObject platillo = jsonElement.getAsJsonObject();
@@ -37,12 +37,11 @@ public class EliminarPJSON {
                     ", Precio: " + platillo.get("precio").getAsFloat());
         }
 
-        // Pedir al usuario el nombre del platillo a eliminar
+
         Scanner scanner = new Scanner(System.in);
         System.out.print("Nombre del platillo a eliminar: ");
         String nombreEliminar = scanner.nextLine();
 
-        // Eliminar el platillo del JsonArray
         boolean eliminado = false;
         for (int i = 0; i < jsonArray.size(); i++) {
             JsonObject platillo = jsonArray.get(i).getAsJsonObject();
