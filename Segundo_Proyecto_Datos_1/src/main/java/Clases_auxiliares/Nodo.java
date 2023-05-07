@@ -103,11 +103,4 @@ public class Nodo implements Serializable {
         this.platillo = platillo;
     }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
 }
