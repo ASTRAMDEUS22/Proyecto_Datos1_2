@@ -8,6 +8,8 @@ module sample.segundoproyectodatos1 {
     requires java.xml;
     requires com.fasterxml.jackson.databind;
     requires java.scripting;
+    requires com.google.gson;
+    requires org.json;
 
     opens MainClass to javafx.fxml;
     exports MainClass;

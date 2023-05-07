@@ -1,0 +1,20 @@
+[
+  {
+    "nombre": "Ensalada César",
+    "calorias": 150,
+    "tiempoPreparacion": 10,
+    "precio": 8.99
+  },
+  {
+    "nombre": "Salmón a la parrilla",
+    "calorias": 250,
+    "tiempoPreparacion": 20,
+    "precio": 15.99
+  },
+  {
+    "nombre": "Pollo",
+    "calorias": 10,
+    "tiempoPreparacion": 10,
+    "precio": 10.0
+  }
+]
