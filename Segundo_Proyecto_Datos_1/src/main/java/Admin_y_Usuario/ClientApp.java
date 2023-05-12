@@ -1,6 +1,5 @@
 package Admin_y_Usuario;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -131,7 +130,7 @@ public class ClientApp implements Runnable{
         paneMenu.setTranslateX(50);
         paneMenu.setTranslateY(50);
 
-
+        /**
 
         //Instancias temporales para probar funcionamiento de la listView
         Platillo platillo1 = new Platillo("Arroz con Pollo",2500,1200);
@@ -139,7 +138,6 @@ public class ClientApp implements Runnable{
         Platillo platillo3 = new Platillo("Batido de fresa",1200,2500);
         Platillo platillo4 = new Platillo("Bistec",3000,2360);
         Platillo platillo5 = new Platillo("Cerdo",20000,32520);
-
         //Añadir los platillos temporales a la lista
         listaPlatillos.addAll(
                 platillo1,
@@ -148,6 +146,8 @@ public class ClientApp implements Runnable{
                 platillo4,
                 platillo5
         );
+         */
+
 
 
         //Detecta la selección de un elemento en la lista
@@ -161,6 +161,7 @@ public class ClientApp implements Runnable{
                 labelPrecioPlatillo.setText("₡ " + elementoSeleccionado.getPrecio());
             }
         });
+
 
         listViewPlatillos.setMaxHeight(375);
         listViewPlatillos.setMinHeight(350);
