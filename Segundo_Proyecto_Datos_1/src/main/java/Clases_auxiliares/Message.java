@@ -1,13 +1,6 @@
 package Clases_auxiliares;
 
-import Clases_auxiliares.Platillo;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.ListView;
-
-import javax.crypto.MacSpi;
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class Message implements Serializable {
 

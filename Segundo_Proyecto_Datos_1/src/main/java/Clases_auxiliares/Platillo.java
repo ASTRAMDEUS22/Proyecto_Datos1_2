@@ -5,7 +5,7 @@ public class Platillo {
     private String nombrePlatillo;
     private int calorias,precio,minutos,segundos;
 
-    public Platillo(String nombrePlatillo, int calorias, int precio) {
+    public Platillo(String nombrePlatillo, int calorias, int precio, double v) {
         this.nombrePlatillo = nombrePlatillo;
         this.calorias = calorias;
         this.precio = precio;
