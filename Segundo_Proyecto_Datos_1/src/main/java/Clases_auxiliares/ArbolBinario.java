@@ -6,20 +6,35 @@ import javafx.scene.control.ListView;
 
 import java.util.UUID;
 
+/**
+ * Árbol binario de busqueda encargado de manejar la información con respecto a los usuarios administradores y clientes.
+ * Árbol binario que almacena nodos que a su vez almacenan objetos de tipo usuario con la finalidad de guardar la
+ * información de los distintos usuarios escritos en un XML, agrega nuevos nodos buscando el extremo vacío viajando de
+ * derecha a izquierda según un orden jerárquico de los caracteres de texto ingresados.
+ */
 public class ArbolBinario {
 
     Nodo root;
 
     ListaEnlazada listaEnlazada = new ListaEnlazada();
 
-    //ListView<Usuario> listView = new ListView<>(personas);
-
+    /**
+     * Constructor del árbol binario, se inicia la raíz en null
+     */
     public ArbolBinario(){
 
         this.root = null;  //Empieza sin ningún valor
 
     }
 
+    /**
+     * Método que inserta un nuevo nodo en una de las hojas del árbol.
+     * Este método inserta un nuevo nodo en alguna hoja del árbol yendo de derecha a izquierda haciendo comparaciones
+     * hasta encontrar un nodo que apunta a nulo, el nodo a añadir será agregado al árbol en ese espacio nulo que le
+     * corresponde.
+     * @param nuevoNodo Objeto de tipo nodo que será insertado en el árbol binario de búsqueda mediante una comparación
+     * entre el valor que almacena el usuario que contiene y el valor que almacena el árbol binario.
+     */
     public void insertar(Nodo nuevoNodo) {
 
         if (this.root == null) {
@@ -84,7 +99,6 @@ public class ArbolBinario {
         }
 
     }
-
 
     public void eliminarNodo(String key) {
         Nodo current = root;
