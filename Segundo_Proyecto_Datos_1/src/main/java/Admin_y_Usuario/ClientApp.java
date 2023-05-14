@@ -1,13 +1,16 @@
 package Admin_y_Usuario;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import Clases_auxiliares.Message;
 import Clases_auxiliares.Platillo;
@@ -15,7 +18,7 @@ import Clases_auxiliares.Platillo;
 import java.io.*;
 import java.net.Socket;
 
-public class ClientApp implements Runnable{
+public class ClientApp extends Application implements Runnable{
 
     //Socket del cliente
     Socket socket;
@@ -23,6 +26,9 @@ public class ClientApp implements Runnable{
     //Recibir y enviar un Objeto Mensaje
     ObjectOutputStream out;
     ObjectInputStream in;
+
+    //Stage
+    Stage stage;
 
 
 
@@ -40,13 +46,93 @@ public class ClientApp implements Runnable{
             Thread hilo = new Thread(this);
             hilo.start();
 
-            //Se manda a crear una lista de platillos que son tomadas del json correspondiente
-            solicitarListaPlatillos();
-
-
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+    }
+
+    //Label
+    Label labelMain,
+    labelCliente;
+
+    //Botones
+    Button botonIniciarSesion;
+
+    //Cajas de texto
+    TextField usuario;
+    PasswordField password;
+
+
+    @Override
+    public void start(Stage primaryStage){
+
+        stage = primaryStage;
+        StackPane mainPane = new StackPane();  //StackPane principal
+        StackPane loginPane = new StackPane();  //StackPane del login
+
+        //mainPane--------------------------------------------
+        //Labels
+        labelMain = new Label();
+        labelMain.setText("Clientes");
+        labelMain.setTranslateX(0);
+        labelMain.setTranslateY(-250);
+        labelMain.setStyle("-fx-font-size: 20;");
+
+        //loginPane--------------------------------------------
+        //Label
+        labelCliente = new Label();
+        labelCliente.setText("Login");
+        labelCliente.setTranslateX(0);
+        labelCliente.setTranslateY(-100);
+        labelCliente.setStyle("-fx-font-size: 15;");
+
+        //Botones
+        botonIniciarSesion = new Button();
+        botonIniciarSesion.setText("Iniciar sesión");
+        botonIniciarSesion.setStyle("-fx-font-size: 12;");
+        botonIniciarSesion.setOnAction(e -> comprobarLogin(usuario.getText(), password.getText()));
+        botonIniciarSesion.setTranslateY(100);
+
+        //Cajas de texto
+        usuario = new TextField();
+        usuario.setPromptText("Usuario");
+        usuario.setMaxWidth(120);
+        usuario.setTranslateY(-30);
+
+        password = new PasswordField();
+        password.setPromptText("Contraseña");
+        password.setMaxWidth(120);
+        password.setTranslateY(10);
+
+        //Caracteristicas del StackPane del cliente
+        loginPane.setStyle("-fx-border-color: #000");
+        loginPane.setMaxWidth(220);
+        loginPane.setMaxHeight(300);
+
+        //Agregar elementos graficos al loginPane
+        loginPane.getChildren().addAll(
+                labelCliente,
+                botonIniciarSesion,
+                usuario,
+                password
+        );
+
+        //Agregar elementos graficos al mainPane
+        mainPane.getChildren().addAll(
+                labelMain,
+                loginPane
+        );
+
+
+        Scene menu = new Scene(mainPane, 500, 700);
+        primaryStage.setTitle("ClientApp");
+        primaryStage.setScene(menu);
+
+        primaryStage.show();
+
+
+
 
     }
 
@@ -68,8 +154,7 @@ public class ClientApp implements Runnable{
     Pane mainPane,
             paneMenu;
 
-    //Stage
-    Stage stage = new Stage();
+
 
 
     //Lista de personas de ejemplo
@@ -130,7 +215,7 @@ public class ClientApp implements Runnable{
         paneMenu.setTranslateX(50);
         paneMenu.setTranslateY(50);
 
-        /**
+
 
         //Instancias temporales para probar funcionamiento de la listView
         Platillo platillo1 = new Platillo("Arroz con Pollo",2500,1200);
@@ -138,6 +223,7 @@ public class ClientApp implements Runnable{
         Platillo platillo3 = new Platillo("Batido de fresa",1200,2500);
         Platillo platillo4 = new Platillo("Bistec",3000,2360);
         Platillo platillo5 = new Platillo("Cerdo",20000,32520);
+
         //Añadir los platillos temporales a la lista
         listaPlatillos.addAll(
                 platillo1,
@@ -146,8 +232,6 @@ public class ClientApp implements Runnable{
                 platillo4,
                 platillo5
         );
-         */
-
 
 
         //Detecta la selección de un elemento en la lista
@@ -161,7 +245,6 @@ public class ClientApp implements Runnable{
                 labelPrecioPlatillo.setText("₡ " + elementoSeleccionado.getPrecio());
             }
         });
-
 
         listViewPlatillos.setMaxHeight(375);
         listViewPlatillos.setMinHeight(350);
@@ -197,6 +280,29 @@ public class ClientApp implements Runnable{
 
     }
 
+    private void comprobarLogin(String user,String contra){
+
+        Message message = new Message("LoginClient",user,contra);
+
+        try {
+            out.writeObject(message);
+        }catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void ejecutarInterfaz(){
+        //Se manda a crear una lista de platillos que son tomadas del json correspondiente
+        solicitarListaPlatillos();
+        try {
+
+            elementosGraficos();
+
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+    }
+
     private void solicitarListaPlatillos(){
         //System.out.println("solicitarLitaPlatillo");
         try {
@@ -230,7 +336,17 @@ public class ClientApp implements Runnable{
 
                 System.out.println("Mensaje del server: " + message.getNombreMetodo());
 
+                switch (message.getNombreMetodo()){
 
+                    case "Login_Client_Exitoso" -> {
+                        Platform.runLater(this::ejecutarInterfaz);
+                    }
+
+                    case "Login_Client_Fallido" -> {
+                        System.out.println("pipipipi");
+                    }
+
+                }
 
 
             }
@@ -248,6 +364,9 @@ public class ClientApp implements Runnable{
 
     }
 
+    public static void main(String[] args){
+        launch(args);
+    }
 
 
 }

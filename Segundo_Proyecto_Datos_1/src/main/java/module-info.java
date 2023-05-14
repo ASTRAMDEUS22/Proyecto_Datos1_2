@@ -9,14 +9,12 @@ module sample.segundoproyectodatos1 {
     requires com.fasterxml.jackson.databind;
     requires java.scripting;
     requires com.google.gson;
-    requires org.json;
+    //requires org.json;
 
-    opens MainClass to javafx.fxml;
-    exports MainClass;
+    opens Admin_y_Usuario to javafx.fxml;
     exports Servidor;
     opens Servidor to javafx.fxml;
     exports Admin_y_Usuario;
-    opens Admin_y_Usuario to javafx.fxml;
     exports Clases_auxiliares;
     opens Clases_auxiliares to javafx.fxml;
 }

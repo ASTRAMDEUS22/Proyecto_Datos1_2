@@ -106,7 +106,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>sample.segundoproyectodatos1/MainClass.Menu
+                            <mainClass>sample.segundoproyectodatos1/Servidor.ServerApp
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
