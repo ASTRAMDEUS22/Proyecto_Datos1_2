@@ -6,9 +6,15 @@
     "precio": 8.99
   },
   {
-    "nombre": "Pollo",
-    "calorias": 55,
-    "tiempoPreparacion": 1,
-    "precio": 1500.0
+    "nombre": "Bistec",
+    "calorias": 965,
+    "tiempoPreparacion": 320,
+    "precio": 5900.0
+  },
+  {
+    "nombre": "Dedos al vapor",
+    "calorias": 451,
+    "tiempoPreparacion": 201,
+    "precio": 3210.0
   }
 ]

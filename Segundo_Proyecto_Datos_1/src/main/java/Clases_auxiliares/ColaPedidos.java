@@ -20,7 +20,7 @@ public class ColaPedidos {
 
         // Leer el archivo JSON existente en un objeto JsonArray
         JsonArray jsonArray = null;
-        try (Reader reader = new FileReader("C:\\Users\\XPC}\\OneDrive\\Documents\\GitHub\\Proyecto_Datos1_2\\Segundo_Proyecto_Datos_1\\Archvos JSON\\Platillos1.JSON")) {
+        try (Reader reader = new FileReader("Archvos JSON\\Platillos1.JSON")) {
             Gson gson = new Gson();
             jsonArray = gson.fromJson(reader, JsonArray.class);
         } catch (IOException e) {

@@ -16,40 +16,18 @@ import Clases_auxiliares.Message;
 import Clases_auxiliares.Platillo;
 
 import java.io.*;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ClientApp extends Application implements Runnable{
 
-    //Socket del cliente
-    Socket socket;
-
-    //Recibir y enviar un Objeto Mensaje
-    ObjectOutputStream out;
-    ObjectInputStream in;
-
     //Stage
     Stage stage;
 
-
-
     public ClientApp(){
-
-        try {
-            //Inicializa el socket en un host y puerto específico
-            this.socket = new Socket("192.168.1.246",1234);
-
-            //Inicializa el envio y entrega de información
-            this.out = new ObjectOutputStream(socket.getOutputStream());
-            this.in = new ObjectInputStream(socket.getInputStream());
-
             //Crea un hilo
             Thread hilo = new Thread(this);
             hilo.start();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 
     //Label
@@ -266,6 +244,8 @@ public class ClientApp extends Application implements Runnable{
         );
 
 
+
+
         //Agrega al Pane principal los demás contenedores
         mainPane.getChildren().addAll(
                 paneMenu);
@@ -280,15 +260,30 @@ public class ClientApp extends Application implements Runnable{
 
     }
 
+    private void enviarMensajeServidor(Message mensaje){
+        try {
+            Socket socket = new Socket("localhost", 1234);
+            ObjectOutputStream enviarObjeto = new ObjectOutputStream(socket.getOutputStream());
+
+            enviarObjeto.writeObject(mensaje);
+
+            System.out.println("Se manda mensaje al Servidor");
+
+            socket.close();
+            enviarObjeto.close();
+
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
     private void comprobarLogin(String user,String contra){
 
         Message message = new Message("LoginClient",user,contra);
+        enviarMensajeServidor(message);
 
-        try {
-            out.writeObject(message);
-        }catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     private void ejecutarInterfaz(){
@@ -304,21 +299,9 @@ public class ClientApp extends Application implements Runnable{
     }
 
     private void solicitarListaPlatillos(){
-        //System.out.println("solicitarLitaPlatillo");
-        try {
-
             Message message = new Message("obtenerListaPlatillos");
 
-            out.writeObject(message);
-            System.out.println("Se manda mensaje al Servidor");
-
-
-
-
-
-        }catch (IOException e){
-            throw new RuntimeException(e);
-        }
+            enviarMensajeServidor(message);
     }
 
     /**
@@ -329,34 +312,42 @@ public class ClientApp extends Application implements Runnable{
 
         try {
 
+            ServerSocket servidor_local = new ServerSocket(2020);
+
+            Socket socket;
+
+            Message message;
+
             while (true){
 
-                //Leer info del server
-                Message message = (Message) in.readObject();
+                //Acepta la información entrante de otros clientes o del propio servidor
+                socket = servidor_local.accept();
 
-                System.out.println("Mensaje del server: " + message.getNombreMetodo());
+                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+                message = (Message) in.readObject();
+
+                System.out.println(message.getNombreMetodo());
 
                 switch (message.getNombreMetodo()){
 
-                    case "Login_Client_Exitoso" -> {
+                    case "LoginClient_Exitoso" -> {
                         Platform.runLater(this::ejecutarInterfaz);
                     }
 
-                    case "Login_Client_Fallido" -> {
-                        System.out.println("pipipipi");
+                    case "LoginClient_Fallido" -> {
+                        System.out.println("Se mamo");
                     }
+
+                    case "listaPlatillosCreada" -> {
+                        System.out.println("Se manda a crear una lista de platillos :DD");
+                    }
+
 
                 }
 
 
             }
-
-
-
-
-
-
-
 
         }catch (IOException | ClassNotFoundException e){
             throw new RuntimeException(e);

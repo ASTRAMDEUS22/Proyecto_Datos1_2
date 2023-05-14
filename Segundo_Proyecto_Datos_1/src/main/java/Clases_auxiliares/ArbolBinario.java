@@ -1,11 +1,5 @@
 package Clases_auxiliares;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.ListView;
-
-import java.util.UUID;
-
 /**
  * Árbol binario de busqueda encargado de manejar la información con respecto a los usuarios administradores y clientes.
  * Árbol binario que almacena nodos que a su vez almacenan objetos de tipo usuario con la finalidad de guardar la
@@ -49,15 +43,13 @@ public class ArbolBinario {
                 if (valor < 0) {
                     if (nodoActual.getIzquierda() == null) {
                         nodoActual.setIzquierda(nuevoNodo);
-                        //System.out.println("El nodo a insertar en el árbol es: " + nuevoNodo.getValor().getUsername());
-                        break;
+                        return;
                     }
                     nodoActual = nodoActual.getIzquierda();
                 } else {
                     if (nodoActual.getDerecha() == null) {
                         nodoActual.setDerecha(nuevoNodo);
-                        //System.out.println("El nodo a insertar en el árbol es: " + nuevoNodo.getValor().getUsername());
-                        break;
+                        return;
                     }
                     nodoActual = nodoActual.getDerecha();
                 }
@@ -100,14 +92,61 @@ public class ArbolBinario {
 
     }
 
-    public void eliminarNodo(String key) {
+    public void eliminarNodo(String user){
+        eliminarPersona(this.root,user);
+    }
+    
+    //Referencia: https://parzibyte.me/blog/2023/01/18/java-eliminar-nodo-arbol-binario-abb/
+    private Nodo eliminarPersona(Nodo nodo, String user) {
+
+        if (nodo == null) {
+            return null;
+        }
+        
+        int valor = nodo.getValor().getUsername().compareTo(user);
+        
+        if (valor > 0) {
+            nodo.setDerecha(this.eliminarPersona(nodo.getDerecha(), user));
+        } else if (valor < 0) {
+            nodo.setIzquierda(this.eliminarPersona(nodo.getIzquierda(), user));
+        } else {
+            if (nodo.getIzquierda() == null && nodo.getDerecha() == null) {
+                nodo = null;
+            } else if (nodo.getDerecha() != null) {
+                nodo.setValor(this.sucesor(nodo));
+                nodo.setDerecha(this.eliminarPersona(nodo.getDerecha(), user));
+            } else {
+                nodo.setValor(this.predecesor(nodo));
+                nodo.setIzquierda(this.eliminarPersona(nodo.getIzquierda(), user));
+            }
+        }
+        return nodo;
+    }
+
+    private Usuario sucesor(Nodo nodo) {
+        nodo = nodo.getDerecha();
+        while (nodo.getIzquierda() != null) {
+            nodo = nodo.getIzquierda();
+        }
+        return nodo.getValor();
+    }
+
+    private Usuario predecesor(Nodo nodo) {
+        nodo = nodo.getIzquierda();
+        while (nodo.getDerecha() != null) {
+            nodo = nodo.getDerecha();
+        }
+        return nodo.getValor();
+    }
+
+    /*public void eliminarNodo(String key) {
         Nodo current = root;
         Nodo parent = root;
         boolean isLeftChild = true;
 
-        /*
+
         Ejecuta mientras el current no sea nulo y el elemento buscado no coincida con algún Nodo
-         */
+
         while (current != null && !current.getValor().getUsername().equals(key)) {
             parent = current;
 
@@ -124,15 +163,9 @@ public class ArbolBinario {
 
         System.out.println("El nodo encontrado en el árbol a eliminar es: " + current.getValor().getUsername());
 
-        if (current == null) {
-            return;
-        }
 
-
-
-        /*
         Pregunta si es un Nodo hoja
-         */
+
         if (current.getIzquierda() == null && current.getDerecha() == null) {
             if (current == root) {
                 root = null;
@@ -142,9 +175,9 @@ public class ArbolBinario {
                 parent.setDerecha(null);
             }
         }
-        /*
+
         Pregunta si solo tiene un hijo a la derecha
-         */
+
         else if (current.getIzquierda() == null) {
             if (current == root) {
                 root = current.getDerecha();
@@ -154,9 +187,9 @@ public class ArbolBinario {
                 parent.setDerecha(current.getDerecha());
             }
         }
-        /*
+
         Pregunta si solo tiene un hijo a la izquierda
-         */
+
         else if (current.getDerecha() == null) {
             if (current == root) {
                 root = current.getIzquierda();
@@ -166,9 +199,9 @@ public class ArbolBinario {
                 parent.setDerecha(current.getIzquierda());
             }
         }
-        /*
+
         Caso donde tiene 2 Nodos hijos
-         */
+
         else {
             Nodo successor = getSuccessor(current);
 
@@ -202,7 +235,7 @@ public class ArbolBinario {
         }
 
         return successor;
-    }
+    }*/
 
 
     public void crearListaUsers(){
@@ -231,38 +264,6 @@ public class ArbolBinario {
         return listaEnlazada;
     }
 
-    /*public Nodo buscarPadre(Nodo nodo){
 
-        Nodo current = this.root;
-
-        while (true){
-
-            int valor = current.getValor().getUsername().compareTo(nodo.getValor().getUsername());
-
-            //Se pregunta si es la raíz
-            if (current.getValor().getUsername().equals(this.root.getValor().getUsername())){
-                return null;  //Devuelve que no hay padre ya que es la raíz
-            }
-
-            //Preguntamos si alguno de los Nodos hijos es el que estamos buscando
-            if (current.getValor().getUsername().equals(current.getDerecha().getValor().getUsername())){
-                return current;  //Devuelve el padre
-            }
-            else if (current.getValor().getUsername().equals(current.getIzquierda().getValor().getUsername())) {
-                return current;  //Devuelve el padre
-            }
-
-            if (valor < 0){
-                current = current.getDerecha();  //Avanza a la derecha
-
-            }else {
-                current = current.getIzquierda();  //Avanza a la izquierda
-            }
-
-
-        }
-
-
-    }*/
 
 }

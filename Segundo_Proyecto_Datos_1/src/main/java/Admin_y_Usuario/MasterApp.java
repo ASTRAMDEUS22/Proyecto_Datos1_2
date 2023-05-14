@@ -22,42 +22,15 @@ import javafx.stage.WindowEvent;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 public class MasterApp extends Application implements Runnable{
 
-    //Cosas relacionadas al conectarse al servidor
-    Socket socket;
-
-    //Puente de salida de mensajes entre el cliente y server
-    ObjectOutputStream out;
-    //Puente de entrada de mensajes entre el cliente y server
-    ObjectInputStream in;
-
-    //Hilo
-    Thread hilo;
-
     public MasterApp() {
-
-        try {
-
-            //Inicializa el socket en un host y puerto específico
-            this.socket = new Socket("localhost", 1234);
-
-
-            //Inicializa el envio y entrega de información
-            this.out = new ObjectOutputStream(socket.getOutputStream());
-            this.in = new ObjectInputStream(socket.getInputStream());
-
-            //Crea un hilo
-            this.hilo = new Thread(this);
-            hilo.start();
-
-            System.out.println("socket masterapp: " + socket);
-
-        }catch (IOException e){
-            throw new RuntimeException(e);
-        }
+        //Crea un hilo
+        Thread hilo = new Thread(this);
+        hilo.start();
 
     }
 
@@ -142,15 +115,7 @@ public class MasterApp extends Application implements Runnable{
 
         primaryStage.show();
 
-
-
-
-
-
     }
-
-
-
 
     //Definir objetos de la interfaz
 
@@ -416,7 +381,7 @@ public class MasterApp extends Application implements Runnable{
                 tab2
         );
 
-        //Se le pide al servidor que envie una lista con la cuál se pueda formar la listView
+        //Se le pide al servidor que envié una lista con la cual se pueda formar la listView
         cargarListaUsers();
 
         //Escena donde se mostrará los elementos
@@ -429,17 +394,35 @@ public class MasterApp extends Application implements Runnable{
 
     }
 
+    private void enviarMensajeServidor(Message message){
+
+        try {
+
+            Socket socket = new Socket("localhost",1234);
+            ObjectOutputStream enviarObjeto = new ObjectOutputStream(socket.getOutputStream());
+
+            enviarObjeto.writeObject(message);
+
+            System.out.println("Se manda el mensaje");
+
+            socket.close();
+            enviarObjeto.close();
+
+
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+
+    }
+
     public void comprobarLogin(String usuario,String contra){
 
         Message message = new Message("LoginAdmin",usuario,contra);
 
         //Escribir al server
-        try {
-            out.writeObject(message);
-            System.out.println("Mensaje enviado");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        enviarMensajeServidor(message);
+
+
 
 
     }
@@ -448,12 +431,10 @@ public class MasterApp extends Application implements Runnable{
         //Se crea un mensaje para el server
         Message message = new Message("agregarNuevoAdmin",user,contra);
 
-        try {
-            out.writeObject(message);
-            System.out.println("Mensaje enviado");
-        }catch (IOException e){
-            throw new RuntimeException(e);
-        }
+
+        enviarMensajeServidor(message);
+        System.out.println("Mensaje enviado");
+
 
         personas.add(new Usuario(user,contra));
 
@@ -465,12 +446,10 @@ public class MasterApp extends Application implements Runnable{
 
         Message message = new Message("editarAdministrador",user,newUser,newPassword);
 
-        try {
-            out.writeObject(message);
-            System.out.println("Se mando el mensaje");
-        }catch (IOException e){
-            throw new RuntimeException(e);
-        }
+
+        enviarMensajeServidor(message);
+        System.out.println("Se mando el mensaje");
+
     }
 
     //Edita la persona de la listview
@@ -486,12 +465,7 @@ public class MasterApp extends Application implements Runnable{
 
         Message message = new Message("eliminarAdministrador",user);
 
-        try {
-            out.writeObject(message);
-
-        }catch (IOException e){
-            throw new RuntimeException(e);
-        }
+        enviarMensajeServidor(message);
 
         personas.remove(index);
 
@@ -512,6 +486,8 @@ public class MasterApp extends Application implements Runnable{
 
         }
 
+        System.out.println("Se formo la lista");
+
 
         listaEnlazada.verElementos();
     }
@@ -519,15 +495,19 @@ public class MasterApp extends Application implements Runnable{
     public void cargarListaUsers(){
         Message message = new Message("obtenerListaUsers");
 
-        try {
-            out.writeObject(message);
+        enviarMensajeServidor(message);
 
+    }
+
+    private void ejecutarInterfaz(){
+
+        try{
+            elementosGraficos();
         }catch (IOException e){
             throw new RuntimeException(e);
         }
 
     }
-
 
     /**
      * Metodo que ejecuta la interfaz de Runnable
@@ -536,41 +516,58 @@ public class MasterApp extends Application implements Runnable{
     public void run(){
 
         try {
-            while (!Thread.currentThread().isInterrupted()){
 
-                //Lee la info del server
-                Message message = (Message) in.readObject();
+            ServerSocket servidor_local = new ServerSocket(4040);
+
+            Socket socket;
+
+            Message message;
+
+            while (true){
+
+                //Acepta la información entrante de otros clientes o del propio servidor
+                socket = servidor_local.accept();
+
+                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+
+                message = (Message) in.readObject();
+
+                System.out.println(message.getNombreMetodo());
 
                 switch (message.getNombreMetodo()){
 
+                    case "LoginAdmin_Exitoso" -> {
+                        Platform.runLater(this::ejecutarInterfaz);
+                    }
+
+                    case "LoginAdmin_Fallido" -> {
+                        System.out.println("Mamo el admin");
+                    }
+
                     case "crearListaUsers" -> {
+                        System.out.println("crearListaUsers");
                         crearListView(message.getListaEnlazada());
                     }
 
-                    case "usuario modificado correctamente" -> {
-                        editarPersonaLista(message.getUsuario(),message.getPassword());
-                    }
+                    case "usuarioModificado_correctamente" -> {
 
-                    case "Login_Admin_Exitoso" -> {
-                        Platform.runLater(() -> {
-                            try {
+                        String user = message.getUsuario();
+                        String contra = message.getPassword();
 
-                                elementosGraficos();
-
-                            }catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        });
+                        editarPersonaLista(user,contra);
                     }
 
                 }
+
+                socket.close();
+
 
 
 
             }
 
         }catch (IOException | ClassNotFoundException e){
-            throw new RuntimeException(e);
+            System.out.println("Error en el run: " + e.getMessage());
         }
 
     }
