@@ -196,11 +196,11 @@ public class ClientApp extends Application implements Runnable{
 
 
         //Instancias temporales para probar funcionamiento de la listView
-        Platillo platillo1 = new Platillo("Arroz con Pollo",2500,1200);
-        Platillo platillo2 = new Platillo("Olla de carne",6000,3400);
-        Platillo platillo3 = new Platillo("Batido de fresa",1200,2500);
-        Platillo platillo4 = new Platillo("Bistec",3000,2360);
-        Platillo platillo5 = new Platillo("Cerdo",20000,32520);
+        Platillo platillo1 = new Platillo("Arroz con Pollo",2500,1200,120);
+        Platillo platillo2 = new Platillo("Olla de carne",6000,3400,301);
+        Platillo platillo3 = new Platillo("Batido de fresa",1200,2500,14);
+        Platillo platillo4 = new Platillo("Bistec",3000,2360,450);
+        Platillo platillo5 = new Platillo("Cerdo",20000,32520,36);
 
         //Añadir los platillos temporales a la lista
         listaPlatillos.addAll(

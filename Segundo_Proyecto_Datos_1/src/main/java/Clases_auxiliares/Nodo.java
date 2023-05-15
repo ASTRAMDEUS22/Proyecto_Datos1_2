@@ -7,11 +7,7 @@ public class Nodo implements Serializable {
     private Usuario valor;
     private Nodo derecha;
     private Nodo izquierda;
-
-
     private Nodo next;
-    private Usuario usuario;
-    private Platillo platillo;
 
     /**
      * Constructor del objeto que almacenará usuarios
@@ -94,27 +90,5 @@ public class Nodo implements Serializable {
     public void setNext(Nodo next) {
         this.next = next;
     }
-
-    /**
-     * Devuelve el Platillo almacenado en el Nodo
-     *
-     * @return Objeto tipo Platillo
-     */
-
-    public Platillo getPlatillo() {
-        return platillo;
-    }
-
-
-
-    /**
-     * Asigna al Nodo un objeto de tipo Platillo
-     * @param platillo Nuevo platillo
-    */
-
-    public void setPlatillo(Platillo platillo) {
-        this.platillo = platillo;
-    }
-
 
 }

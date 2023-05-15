@@ -1,7 +1,9 @@
 package Servidor;
 
 import Clases_auxiliares.*;
-import com.fasterxml.jackson.databind.ser.impl.MapEntrySerializer;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -20,7 +22,6 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 
 //CLass server
 public class ServerApp implements Runnable {
@@ -38,12 +39,16 @@ public class ServerApp implements Runnable {
 
         this.arbolBinarioClient = obtenerListaClientes();
         this.arbolBinarioAdmins = obtenerListaAdministradores();
+        this.arbolAVL = obtenerPlatillos();
+
 
     }
 
     //Arboles binarios
     ArbolBinario arbolBinarioAdmins;
     ArbolBinario arbolBinarioClient;
+
+    ArbolALV arbolAVL;
 
     //Lista enlazada
     ListaEnlazada listaEnlazada;
@@ -148,6 +153,44 @@ public class ServerApp implements Runnable {
 
         return arbolBinario;
 
+    }
+
+    private ArbolALV obtenerPlatillos(){
+
+        ArbolALV arbolALVTemp = new ArbolALV();
+
+        JsonArray jsonArray = null;
+
+        try (Reader reader = new FileReader("Archvos JSON\\Platillos1.JSON")){
+            Gson gson = new Gson();
+            jsonArray = gson.fromJson(reader,JsonArray.class);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        //Buscar los platillos en el JSON
+        for (int i = 0; i < jsonArray.size(); i++){
+
+            JsonObject platilloJson = jsonArray.get(i).getAsJsonObject();
+
+            //Crear el objeto platillo
+            String nombre = platilloJson.get("nombre").getAsString();
+            int calorias = platilloJson.get("calorias").getAsInt();
+            float tiempoPreparacion = platilloJson.get("tiempoPreparacion").getAsFloat();
+            int precio = platilloJson.get("precio").getAsInt();
+
+            Platillo platillo = new Platillo(nombre,calorias,precio,tiempoPreparacion);
+
+            //Agregar el platillo al árbol
+            arbolALVTemp.insertar(platillo);
+
+
+        }
+
+
+        arbolALVTemp.preorden(arbolALVTemp.getRaiz());
+
+        return arbolALVTemp;
     }
 
     private void modificarUsuarioAdmin(String username, String newUsername, String newPassword) {
@@ -504,7 +547,8 @@ public class ServerApp implements Runnable {
                         String user = message.getUsuario();
                         String contra = message.getPassword();
 
-                        verificarClients(user,contra);
+                        //verificarClients(user,contra);
+                        obtenerPlatillos();
 
                     }
 

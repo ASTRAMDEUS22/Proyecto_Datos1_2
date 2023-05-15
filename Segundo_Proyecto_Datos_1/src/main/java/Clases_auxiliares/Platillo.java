@@ -3,12 +3,14 @@ package Clases_auxiliares;
 public class Platillo {
 
     private String nombrePlatillo;
-    private int calorias,precio,minutos,segundos;
+    private int calorias,precio;
+    private float tiempo;
 
-    public Platillo(String nombrePlatillo, int calorias, int precio) {
+    public Platillo(String nombrePlatillo, int calorias, int precio,float tiempo) {
         this.nombrePlatillo = nombrePlatillo;
         this.calorias = calorias;
         this.precio = precio;
+        this.tiempo = tiempo;
     }
 
     @Override
@@ -39,5 +41,13 @@ public class Platillo {
 
     public void setPrecio(int precio) {
         this.precio = precio;
+    }
+
+    public float getTiempo() {
+        return tiempo;
+    }
+
+    public void setTiempo(float tiempo) {
+        this.tiempo = tiempo;
     }
 }

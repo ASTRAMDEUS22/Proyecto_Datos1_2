@@ -5,258 +5,58 @@
  
  
  <user>
-                              
-    
-    
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
   <username>1</username>
-                              
-    
-    
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
   <password>1</password>
-                             
-  
-  
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
  </user>
-               
-  
-  
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
  <user>
-                              
-    
-    
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
   <username>Pedro</username>
                               
-    
-    
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
   <password>741</password>
-                             
-  
-  
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
  </user>
-               
-  
-  
- 
- 
- 
- 
- 
- 
- 
- 
- 
+
  <user>
-                              
-    
-    
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
   <username>Marilyn</username>
-                              
-    
-    
-  
-  
-  
-  
-  
-  
-  
-  
+
   
   <password>66521</password>
                              
-  
-  
- 
- 
- 
- 
- 
- 
- 
- 
+
  
  </user>
-               
 
-  
-  
- 
- 
-    
-  
- 
- 
- 
- 
- 
- 
- 
-    
- 
-
- 
- 
- 
- 
- 
- 
  
  <user>
                 
   
-  
-  
-  
-  
-  
+
   <username>Josthin</username>
-                
-  
-  
-  
-  
-  
-  
+
   <password>123</password>
                
- 
- 
- 
- 
- 
- 
- </user>
-       
- 
- 
- 
- 
- 
- 
- <user>
-              
-  
-  
-  
-  
-  
-  <username>Markorovi</username>
-              
-  
-  
-  
-  
-  
-  <password>44441</password>
-             
- 
- 
- 
- 
- 
- </user>
-      
- 
- 
- 
-  
- 
- 
- 
- 
- <user>
-          
-  
-  
-  
-  <username>NuevoUser</username>
-          
-  
-  
-  
-  <password>4458</password>
-         
- 
- 
- 
- </user>
-    
- 
 
  
+ </user>
+
  
+ <user>
+              
+
+  <username>Markorovi</username>
+              
+
+  <password>44441</password>
+
+ </user>
+      
+
  <user>
       
   

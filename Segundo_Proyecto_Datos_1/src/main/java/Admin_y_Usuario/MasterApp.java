@@ -559,6 +559,7 @@ public class MasterApp extends Application implements Runnable{
 
                 }
 
+
                 socket.close();
 
 

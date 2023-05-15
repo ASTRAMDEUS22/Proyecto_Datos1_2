@@ -13,8 +13,26 @@
   },
   {
     "nombre": "Dedos al vapor",
-    "calorias": 451,
-    "tiempoPreparacion": 201,
+    "calorias": 587,
+    "tiempoPreparacion": 100,
     "precio": 3210.0
+  },
+  {
+    "nombre": "Arroz con pollo",
+    "calorias": 320,
+    "tiempoPreparacion": 741,
+    "precio": 630.0
+  },
+  {
+    "nombre": "Alitas de pollo",
+    "calorias": 451,
+    "tiempoPreparacion": 302,
+    "precio": 985.0
+  },
+  {
+    "nombre": "Fresas",
+    "calorias": 774,
+    "tiempoPreparacion": 200,
+    "precio": 1200.0
   }
 ]

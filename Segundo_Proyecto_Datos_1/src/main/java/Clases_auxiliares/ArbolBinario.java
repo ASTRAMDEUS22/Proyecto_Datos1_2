@@ -46,13 +46,18 @@ public class ArbolBinario {
                         return;
                     }
                     nodoActual = nodoActual.getIzquierda();
-                } else {
+                } else if (valor > 0){
                     if (nodoActual.getDerecha() == null) {
                         nodoActual.setDerecha(nuevoNodo);
                         return;
                     }
                     nodoActual = nodoActual.getDerecha();
                 }
+                else {
+                    System.out.println("Nodo duplicado");
+                }
+
+
             }
         }
     }
