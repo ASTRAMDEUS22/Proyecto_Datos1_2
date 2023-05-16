@@ -19,11 +19,20 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+
+/**
+ * Esta clase representa la aplicación cliente que se comunica con un servidor.
+ * Proporciona una interfaz gráfica para que el usuario inicie sesión y acceda a un menú de platillos.
+ */
+
 public class ClientApp extends Application implements Runnable{
 
     //Stage
     Stage stage;
-
+    /**
+     * Constructor de la clase ClientApp.
+     * Crea un hilo para ejecutar la aplicación.
+     */
     public ClientApp(){
             //Crea un hilo
             Thread hilo = new Thread(this);
@@ -41,6 +50,12 @@ public class ClientApp extends Application implements Runnable{
     TextField usuario;
     PasswordField password;
 
+    /**
+     * Método de inicio de la aplicación JavaFX.
+     * Crea y muestra la interfaz gráfica de la aplicación.
+     *
+     * @param primaryStage El escenario principal de la aplicación.
+     */
 
     @Override
     public void start(Stage primaryStage){
@@ -139,7 +154,11 @@ public class ClientApp extends Application implements Runnable{
     ObservableList<Platillo> listaPlatillos = FXCollections.observableArrayList();
     ListView<Platillo> listViewPlatillos = new ListView<>(listaPlatillos);
 
-
+    /**
+     * Método para crear los elementos gráficos de la interfaz.
+     *
+     * @throws IOException Si ocurre un error al leer los datos de los platillos.
+     */
     public void elementosGraficos() throws IOException {
 
 
@@ -259,6 +278,11 @@ public class ClientApp extends Application implements Runnable{
 
 
     }
+    /**
+     * Método para enviar un mensaje al servidor.
+     *
+     * @param mensaje El mensaje a enviar.
+     */
 
     private void enviarMensajeServidor(Message mensaje){
         try {
@@ -278,6 +302,12 @@ public class ClientApp extends Application implements Runnable{
 
 
     }
+    /**
+     * Método para comprobar el inicio de sesión del usuario.
+     *
+     * @param user   El nombre de usuario.
+     * @param contra La contraseña.
+     */
 
     private void comprobarLogin(String user,String contra){
 
@@ -285,6 +315,10 @@ public class ClientApp extends Application implements Runnable{
         enviarMensajeServidor(message);
 
     }
+    /**
+     * Método para ejecutar la interfaz gráfica después de un inicio de sesión exitoso.
+     * Solicita la lista de platillos al servidor y muestra los elementos gráficos.
+     */
 
     private void ejecutarInterfaz(){
         //Se manda a crear una lista de platillos que son tomadas del json correspondiente
@@ -297,7 +331,10 @@ public class ClientApp extends Application implements Runnable{
             throw new RuntimeException(e);
         }
     }
-
+    /**
+     * Método para solicitar la lista de platillos al servidor.
+     * Envia un mensaje al servidor para obtener la lista de platillos.
+     */
     private void solicitarListaPlatillos(){
             Message message = new Message("obtenerListaPlatillos");
 
@@ -305,7 +342,8 @@ public class ClientApp extends Application implements Runnable{
     }
 
     /**
-     * Metodo que se ejecuta constantemente a la espera de algún mensaje por parte del servidor
+     * Método que se ejecuta constantemente a la espera de algún mensaje por parte del servidor.
+     * Escucha los mensajes entrantes del servidor y realiza acciones según el tipo de mensaje recibido.
      */
     @Override
     public void run(){
@@ -354,6 +392,11 @@ public class ClientApp extends Application implements Runnable{
         }
 
     }
+    /**
+     * Método principal para ejecutar la aplicación.
+     *
+     * @param args Los argumentos de la línea de comandos.
+     */
 
     public static void main(String[] args){
         launch(args);
