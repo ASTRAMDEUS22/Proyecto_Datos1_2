@@ -1,11 +1,12 @@
-<users>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><users>
     <user>
         <username>Client</username>
         <password>1234</password>
-    </user>
+    <Pedido fecha="2023-05-15T22:00:04.5035047"><Platillo>Bistec</Platillo></Pedido><Pedido fecha="2023-05-15T22:01:46.0364979"><Platillo>Dedos al vapor</Platillo><Platillo>Alitas de pollo</Platillo></Pedido></user>
     <user>
         <username>Josesito</username>
         <password>Soto</password>
+        <historial>[]</historial>
     </user>
     <user>
         <username>2</username>
