@@ -4,10 +4,12 @@ import java.io.Serializable;
 
 public class Nodo implements Serializable {
 
+    private Usuario usuario;
     private Usuario valor;
     private Nodo derecha;
     private Nodo izquierda;
     private Nodo next;
+    private ListaEnlazadaAVL listaEnlazadaAVL;
 
     /**
      * Constructor del objeto que almacenará usuarios
@@ -60,6 +62,15 @@ public class Nodo implements Serializable {
      *
      * @return Objeto tipo Usuario
      */
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    /**
+     * Devuelve el valor de tipo Usuario almacenado en el Nodo
+     *
+     * @return Objeto tipo Usuario
+     */
     public Usuario getValor() {
         return valor;
     }
@@ -71,6 +82,18 @@ public class Nodo implements Serializable {
      */
     public void setValor(Usuario valor) {
         this.valor = valor;
+    }
+    public void setUsuario(Nodo nodo) {
+        this.usuario = usuario;
+    }
+
+    /**
+     * Le asigna al Nodo un objeto de tipo Usuario
+     *
+     * @param usuario Nuevo objeto Usuario
+     */
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     /**
@@ -90,5 +113,15 @@ public class Nodo implements Serializable {
     public void setNext(Nodo next) {
         this.next = next;
     }
+
+    public ListaEnlazadaAVL getListaEnlazadaAVL() {
+        return listaEnlazadaAVL;
+    }
+
+    public void setListaEnlazadaAVL(ListaEnlazadaAVL listaEnlazadaAVL) {
+        this.listaEnlazadaAVL = listaEnlazadaAVL;
+    }
+
+
 
 }

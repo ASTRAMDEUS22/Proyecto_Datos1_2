@@ -1,9 +1,6 @@
 package Admin_y_Usuario;
 
-import Clases_auxiliares.ListaEnlazada;
-import Clases_auxiliares.Message;
-import Clases_auxiliares.Nodo;
-import Clases_auxiliares.Usuario;
+import Clases_auxiliares.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -17,7 +14,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -152,7 +148,14 @@ public class MasterApp extends Application implements Runnable{
             botonEditarAdministrador,
             botonnAgregarPlato;
 
+    //Pane
+    Pane panePedidos;
+    Pane panePlatillos;
+
     //Stage
+
+    ObservableList<Platillo> platillo = FXCollections.observableArrayList();
+    ListView<Platillo> platillos = new ListView<>(platillo);
 
     //Indice de un elemento seleccionado de la lista
     int index;
@@ -239,37 +242,63 @@ public class MasterApp extends Application implements Runnable{
         //Creación de un nuevo administrador
         labelAgregarPlatillo = new Label();
         labelAgregarPlatillo.setText("Agregar un nuevo platillo");
-        labelAgregarPlatillo.setTranslateX(570);
+        labelAgregarPlatillo.setTranslateX(700);
         labelAgregarPlatillo.setTranslateY(175);
 
         textField_platillo = new TextField();
         textField_platillo.setPromptText("Nombre");
         textField_platillo.setStyle("-fx-alignment: center");
-        textField_platillo.setTranslateX(570);
+        textField_platillo.setTranslateX(700);
         textField_platillo.setTranslateY(250);
 
         textField_calorias = new TextField();
         textField_calorias.setPromptText("Calorias");
         textField_calorias.setStyle("-fx-alignment: center");
-        textField_calorias.setTranslateX(570);
+        textField_calorias.setTranslateX(700);
         textField_calorias.setTranslateY(300);
 
         textField_precio = new TextField();
         textField_precio.setPromptText("Precio");
         textField_precio.setStyle("-fx-alignment: center");
-        textField_precio.setTranslateX(570);
+        textField_precio.setTranslateX(700);
         textField_precio.setTranslateY(350);
 
         textField_tiempo = new TextField();
         textField_tiempo.setPromptText("tiempo(segundos)");
         textField_tiempo.setStyle("-fx-alignment: center");
-        textField_tiempo.setTranslateX(570);
+        textField_tiempo.setTranslateX(700);
         textField_tiempo.setTranslateY(400);
 
         botonnAgregarPlato = new Button();
         botonnAgregarPlato.setText("Agregar");
-        botonnAgregarPlato.setTranslateX(580);
+        botonnAgregarPlato.setTranslateX(700);
         botonnAgregarPlato.setTranslateY(450);
+
+        panePedidos = new Pane();
+        panePedidos.setStyle("-fx-border-color: #000;-fx-border-width: 2");
+        panePedidos.setMinWidth(300);  //Anchura mínima
+        panePedidos.setMinHeight(500);  //Altura mínima
+        panePedidos.setTranslateX(50);
+        panePedidos.setTranslateY(50);
+
+
+        //Lista platos
+        platillos.setMaxHeight(375);
+        platillos.setMinHeight(350);
+        platillos.setTranslateX(25);
+        platillos.setTranslateY(25);
+
+
+        panePlatillos = new Pane();
+        panePlatillos.setStyle("-fx-border-color: #000;-fx-border-width: 2");
+        panePlatillos.setMinWidth(300);  //Anchura mínima
+        panePlatillos.setMinHeight(500);  //Altura mínima
+        panePlatillos.setTranslateX(370);
+        panePlatillos.setTranslateY(50);
+
+        panePlatillos.getChildren().add(
+                platillos
+        );
 
 
 
@@ -350,7 +379,9 @@ public class MasterApp extends Application implements Runnable{
                 textField_calorias,
                 textField_precio,
                 textField_tiempo,
-                botonnAgregarPlato
+                botonnAgregarPlato,
+                panePedidos,
+                panePlatillos
         );
 
         //Se agregan elementos gráficos a un panel de opciones
@@ -480,7 +511,7 @@ public class MasterApp extends Application implements Runnable{
 
         for (int i = 0; i < size;i++){
 
-            personas.add(current.getValor());
+            personas.add(current.getUsuario());
 
             current = current.getNext();
 
@@ -555,6 +586,12 @@ public class MasterApp extends Application implements Runnable{
                         String contra = message.getPassword();
 
                         editarPersonaLista(user,contra);
+                    }
+
+                    case "platilloEliminado" -> {
+
+
+
                     }
 
                 }

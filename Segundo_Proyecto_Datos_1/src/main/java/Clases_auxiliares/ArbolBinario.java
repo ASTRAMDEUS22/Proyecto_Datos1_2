@@ -37,7 +37,7 @@ public class ArbolBinario {
             Nodo nodoActual = this.root;
             while (true) {
 
-                int valor = nuevoNodo.getValor().getUsername().compareTo(nodoActual.getValor().getUsername());
+                int valor = nuevoNodo.getUsuario().getUsername().compareTo(nodoActual.getUsuario().getUsername());
 
                 //Si el nuevo Nodo es menor al Nodo actual, va para la izquierda, si no, para la derecha
                 if (valor < 0) {
@@ -70,12 +70,12 @@ public class ArbolBinario {
         //Si el usuario ingresado es igual al usuario guardado en algún nodo
         while (true) {
             //Compara repetidas veces el valor de actual y user para saber si debe ir por los subarboles de la derecha o izquierda
-            int result = actual.getValor().getUsername().compareTo(user);
+            int result = actual.getUsuario().getUsername().compareTo(user);
 
-            System.out.println("Nodo actual: " + actual.getValor().getUsername());
+            System.out.println("Nodo actual: " + actual.getUsuario().getUsername());
 
-            if (actual.getValor().getUsername().equals(user)) {
-                if (actual.getValor().getPassword().equals(contra)) {
+            if (actual.getUsuario().getUsername().equals(user)) {
+                if (actual.getUsuario().getPassword().equals(contra)) {
                     return true;
                 }else {
                     return false;
@@ -108,7 +108,7 @@ public class ArbolBinario {
             return null;
         }
         
-        int valor = nodo.getValor().getUsername().compareTo(user);
+        int valor = nodo.getUsuario().getUsername().compareTo(user);
         
         if (valor > 0) {
             nodo.setDerecha(this.eliminarPersona(nodo.getDerecha(), user));
@@ -118,10 +118,10 @@ public class ArbolBinario {
             if (nodo.getIzquierda() == null && nodo.getDerecha() == null) {
                 nodo = null;
             } else if (nodo.getDerecha() != null) {
-                nodo.setValor(this.sucesor(nodo));
+                nodo.setUsuario(this.sucesor(nodo));
                 nodo.setDerecha(this.eliminarPersona(nodo.getDerecha(), user));
             } else {
-                nodo.setValor(this.predecesor(nodo));
+                nodo.setUsuario(this.predecesor(nodo));
                 nodo.setIzquierda(this.eliminarPersona(nodo.getIzquierda(), user));
             }
         }
@@ -133,7 +133,7 @@ public class ArbolBinario {
         while (nodo.getIzquierda() != null) {
             nodo = nodo.getIzquierda();
         }
-        return nodo.getValor();
+        return nodo.getUsuario();
     }
 
     private Usuario predecesor(Nodo nodo) {
@@ -141,7 +141,7 @@ public class ArbolBinario {
         while (nodo.getDerecha() != null) {
             nodo = nodo.getDerecha();
         }
-        return nodo.getValor();
+        return nodo.getUsuario();
     }
 
     /*public void eliminarNodo(String key) {
@@ -258,7 +258,7 @@ public class ArbolBinario {
 
         //personas.add(current.getValor());
         listaEnlazada.insertarNuevoNodo(current);
-        System.out.println("Funcion agregarUsers: " + current.getValor().getUsername());
+        System.out.println("Funcion agregarUsers: " + current.getUsuario().getUsername());
 
         recursiAgregaUsers(current.getDerecha());
         recursiAgregaUsers(current.getIzquierda());

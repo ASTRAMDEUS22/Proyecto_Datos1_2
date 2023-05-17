@@ -1,77 +1,75 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><users>
-               
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<users>
+                
 
+ 
  
  
  
  <user>
-
+    
   <username>1</username>
-
+    
   <password>1</password>
-
+   
  </user>
-
+  
  <user>
-
+    
   <username>Pedro</username>
-                              
-
-  <password>741</password>
-
- </user>
-
- <user>
-
-  <username>Marilyn</username>
+                                
 
   
-  <password>66521</password>
-                             
+  <password>741</password>
+   
+ </user>
+  
 
  
- </user>
+ 
+ <user>
+                  
+  
 
+  
+  <username>Josthin</username>
+    
+  <password>123</password>
+                 
+
+ 
+ 
+ </user>
+  
  
  <user>
                 
+
   
-
-  <username>Josthin</username>
-
-  <password>123</password>
-               
-
- 
- </user>
-
- 
- <user>
-              
-
   <username>Markorovi</username>
-              
+                
 
+  
   <password>44441</password>
-
+   
  </user>
-      
+       
 
- <user>
-      
-  
-  <username>Luis</username>
-      
-  
-  <password>3320</password>
-     
  
- </user>
   
  
 
+ 
  <user>
+    
   <username>NuevoUser</username>
+    
   <password>4458</password>
+   
+ </user>
+ 
+ <user>
+  <username>Hello</username>
+  <password>223</password>
  </user>
 </users>

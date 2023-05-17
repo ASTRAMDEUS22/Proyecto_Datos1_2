@@ -1,9 +1,7 @@
 package Servidor;
 
 import Clases_auxiliares.*;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.google.gson.*;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -22,6 +20,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 //CLass server
 public class ServerApp implements Runnable {
@@ -41,8 +40,17 @@ public class ServerApp implements Runnable {
         this.arbolBinarioAdmins = obtenerListaAdministradores();
         this.arbolAVL = obtenerPlatillos();
 
+        this.preparacionActual = new PreparacionPedido();
+
+        Thread hilo1 = new Thread(preparacionActual);
+        hilo1.start();
+
+        //restarContador();
+
 
     }
+
+    PreparacionPedido preparacionActual;
 
     //Arboles binarios
     ArbolBinario arbolBinarioAdmins;
@@ -52,6 +60,7 @@ public class ServerApp implements Runnable {
 
     //Lista enlazada
     ListaEnlazada listaEnlazada;
+    ListaEnlazadaAVL listaEnlazadaAVL;
 
     /**
      * Metodo que se encarga de buscar en un archivo XML la llave que almacena Objetos de tipo "user", después de eso
@@ -91,7 +100,7 @@ public class ServerApp implements Runnable {
                     Nodo nodo = new Nodo();
 
                     //Se asigna el valor que va a guardar el Nodo
-                    nodo.setValor(usuario);
+                    nodo.setUsuario(usuario);
 
                     //Se agrega el Nodo a la lista enlazada
                     arbolBinario.insertar(nodo);
@@ -140,7 +149,7 @@ public class ServerApp implements Runnable {
                     Nodo nodo = new Nodo();
 
                     //Se asigna el valor que va a guardar el Nodo
-                    nodo.setValor(usuario);
+                    nodo.setUsuario(usuario);
 
                     //Se agrega el Nodo al árbol binario
                     arbolBinario.insertar(nodo);
@@ -176,8 +185,8 @@ public class ServerApp implements Runnable {
             //Crear el objeto platillo
             String nombre = platilloJson.get("nombre").getAsString();
             int calorias = platilloJson.get("calorias").getAsInt();
-            float tiempoPreparacion = platilloJson.get("tiempoPreparacion").getAsFloat();
-            int precio = platilloJson.get("precio").getAsInt();
+            int tiempoPreparacion = platilloJson.get("tiempoPreparacion").getAsInt();
+            float precio = platilloJson.get("precio").getAsFloat();
 
             Platillo platillo = new Platillo(nombre,calorias,precio,tiempoPreparacion);
 
@@ -188,7 +197,7 @@ public class ServerApp implements Runnable {
         }
 
 
-        arbolALVTemp.preorden(arbolALVTemp.getRaiz());
+        //arbolALVTemp.preorden(arbolALVTemp.getRaiz());
 
         return arbolALVTemp;
     }
@@ -214,7 +223,7 @@ public class ServerApp implements Runnable {
             //Se crea un nuevo Nodo
             Nodo nodo = new Nodo();
             Usuario usuario = new Usuario(newUsername,newPassword);
-            nodo.setValor(usuario);
+            nodo.setUsuario(usuario);
 
             //Se agrega el nuevo nodo con los nuevos valores de usuario y contraseña
             arbolBinarioAdmins.insertar(nodo);
@@ -306,7 +315,7 @@ public class ServerApp implements Runnable {
 
             Usuario usuario = new Usuario(username,password);
             Nodo nodo = new Nodo();
-            nodo.setValor(usuario);
+            nodo.setUsuario(usuario);
 
             listaEnlazada.insertarNuevoNodo(nodo);
             arbolBinarioAdmins.insertar(nodo);
@@ -369,6 +378,50 @@ public class ServerApp implements Runnable {
         }
     }
 
+    private void eliminarPLatilloJson(String platilloEliminar){
+
+        JsonArray jsonArray = null;
+        try (Reader reader = new FileReader("Archvos JSON\\Platillos1.JSON")) {
+            Gson gson = new Gson();
+            jsonArray = gson.fromJson(reader, JsonArray.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JsonObject platillo = jsonArray.get(i).getAsJsonObject();
+            if (platillo.get("nombre").getAsString().equals(platilloEliminar)) {
+                jsonArray.remove(i);
+                break;
+            }
+        }
+
+
+
+        Platillo platillo = new Platillo(platilloEliminar);
+
+        arbolAVL.eliminar(platillo);
+
+        System.out.println("El platillo " + platilloEliminar + " ha sido eliminado.");
+
+
+        // Escribir el JsonArray modificado en el archivo JSON
+        try (Writer writer = new FileWriter("Archvos JSON\\Platillos1.JSON")) {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            gson.toJson(jsonArray, writer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //Se responde al master que un platillo fue eliminado
+        Message message = new Message("platilloEliminado");
+
+        enviarMensaje_Admin(message);
+
+
+    }
+
     private boolean verificarExistenciaAdmins(String user, String password){
 
         boolean resultado = arbolBinarioAdmins.revisarLogin(user,password);
@@ -395,13 +448,6 @@ public class ServerApp implements Runnable {
         //Si llega hasta aquí significa que no hubo coincidencias
         return false;
 
-    }
-
-    private void obtenerListaPlatillos(){
-
-        Message message = new Message("listaPlatillosCreada");  //Agregar la lista enlazada
-
-        enviarMensaje_Cliente(message);
     }
 
     private void verificarAdmin(String usuario, String contra){
@@ -444,6 +490,20 @@ public class ServerApp implements Runnable {
 
     }
 
+    private void obtenerListaPlatillos(){
+
+        Message message = new Message("crearListaPlatillos");
+
+        //Se genera la lista
+        arbolAVL.crearListaPlatillos();
+        listaEnlazadaAVL = arbolAVL.getListaEnlazada();
+        message.setListaEnlazadaAVL(listaEnlazadaAVL);
+
+        enviarMensaje_Cliente(message);
+
+
+    }
+
     private void obtenerListaUsers(){
         Message message1 = new Message("crearListaUsers");
 
@@ -462,25 +522,146 @@ public class ServerApp implements Runnable {
 
     private void enviarMensaje_Cliente(Message message){
         try {
-            System.out.println("Entra al enviarCliente");
             Socket respuesta = new Socket("localhost", 2020);  //El puerto corresponde al client
-            System.out.println("se contruye el socket");
+
             ObjectOutputStream out = new ObjectOutputStream(respuesta.getOutputStream());
-            System.out.println("se contruye el out");
+
 
 
             out.writeObject(message);
-            System.out.println("se envia el mensaje al cliente");
+
 
             respuesta.close();
             out.close();
-            System.out.println("Se cierra el socket");
 
         }catch (IOException e){
             throw new RuntimeException(e);
         }
 
     }
+
+    ListaColaPedidos colaPedidos = new ListaColaPedidos();
+
+    //Tiempo preparación de todos los pedidos
+    int tiempoPlatilloListo;
+    int tiempoPlatilloActual;
+
+    //ListaEnlazadaAVL pedido;
+
+
+    /**
+     * Se envia un pedido, el cuál será almacenado en un nodo, luego ese nodo será almacenado en la lista
+     * de "colaPedidos"
+     *
+     */
+    private void agregarElementoColaPedidos(ListaEnlazadaAVL pedido,Socket socket){
+
+        /*try {
+            localsocket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        System.out.println(localsocket.isClosed());*/
+
+        //Creamos un Nodo temporal
+        Nodo nodo = new Nodo();
+
+        //Al nodo se le asigna el valor del pedido
+        nodo.setListaEnlazadaAVL(pedido);
+
+        colaPedidos.insertar(nodo);
+
+        tiempoPlatilloListo += nodo.getListaEnlazadaAVL().calcularTiempoPreparacion();
+
+        System.out.println(tiempoPlatilloListo);
+
+
+        //Se queda pegado aqui
+        preparacionActual.agregarNuevoPedido(pedido,socket);
+        //preparacionActual.run();
+        System.out.println("weweee");
+
+
+    }
+
+    private void actualizarLista(ListaEnlazadaAVL pedido,Socket socket){
+
+
+
+        agregarElementoColaPedidos(pedido,socket);
+
+    }
+
+    /*public void preparacionActual(){
+
+        //Mientras la cola de pedidos tenga elementos, ejecute
+        while (colaPedidos.getHead() != null) {
+
+            //Muetra las listas con pedidos en la cola
+            colaPedidos.mostrarElementos();
+
+            //Mientras la lista AVL tenga platos, ejecute
+            while (colaPedidos.getListaNodo().getHead() != null) {
+
+                //Tiempo del plato actual
+                int time = colaPedidos.getListaNodo().getHead().getPlatillo().getTiempo();
+
+                //Contador que termina de ejecutar al llegar a un número negativo
+                while (time > -1) {
+
+                    System.out.println("Tiempo platillo actual: " + time);
+
+                    //Disminuye el tiempo
+                    time--;
+
+                    //Pausa de 1 segundo
+                    try {
+
+                        Thread.sleep(1000);
+
+                    } catch (InterruptedException e) {
+
+                        throw new RuntimeException(e);
+
+                    }
+
+                }
+
+                //Habiendo terminado la preparación del plato actual, se prepara el siguiente
+                colaPedidos.getListaNodo().eliminarPrimero();
+
+            }
+
+            //Habiendo terminado de preparar todos los platillos, sigue con el siguiente pedido
+            colaPedidos.eliminarPrimero();
+
+        }
+
+    }*/
+
+    public void restarContador(){
+        while (true) {
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+
+
+            if (tiempoPlatilloListo > 0) {
+                tiempoPlatilloListo -= 1;
+            } else  {
+                tiempoPlatilloListo = 0;
+            }
+            //System.out.println("Tiempo de todos los pedidos: " + tiempoPlatilloListo);
+        }
+
+
+    }
+
 
     private void enviarMensaje_Admin(Message message){
         try {
@@ -547,13 +728,24 @@ public class ServerApp implements Runnable {
                         String user = message.getUsuario();
                         String contra = message.getPassword();
 
-                        //verificarClients(user,contra);
-                        obtenerPlatillos();
+                        verificarClients(user,contra);
+                        //obtenerPlatillos();
 
                     }
 
                     case "obtenerListaPlatillos" -> {
                         obtenerListaPlatillos();
+                    }
+
+                    case "agregarPedidoCola" -> {
+                        //agregarElementoColaPedidos(message.getListaEnlazadaAVL(),socket);
+                        Message newMessage = new Message();
+                        newMessage.setListaEnlazadaAVL(message.getListaEnlazadaAVL());
+
+                        actualizarLista(newMessage.getListaEnlazadaAVL(),socket);
+
+                        //socket.close();
+                        System.out.println("socket close");
                     }
 
 
@@ -597,22 +789,8 @@ public class ServerApp implements Runnable {
 
 
                 }
+
                 socket.close();
-
-
-
-
-
-
-
-
-
-
-
-            /*Nota para el Josthin de mañana, hacer que el server este a la espera de conexiones y haga el hilo con
-            el objeto detectar conexion, despues en detectar conexion se guarda el out de los sockets que van llegando
-            para enviar información a uno de ellos en específico y así simular la conexion entre el masterapp y client*/
-
 
             }
         }catch (Exception e){

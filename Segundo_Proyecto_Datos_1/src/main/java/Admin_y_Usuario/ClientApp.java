@@ -1,5 +1,7 @@
 package Admin_y_Usuario;
 
+import Clases_auxiliares.AvlNodo;
+import Clases_auxiliares.ListaEnlazadaAVL;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -141,18 +143,33 @@ public class ClientApp extends Application implements Runnable{
             labelPrecio,
             labelNombrePlatillo,
             labelCantidadCaloriasPlatillo,
-            labelPrecioPlatillo;
+            labelPrecioPlatillo,
+            labelTiempo,
+            labelTiempoPlatillo;
+
 
     //Pane
     Pane mainPane,
-            paneMenu;
+            paneMenu,
+            panePedidos;
 
 
+    //Buttons
+    Button agregarPlatillo,
+            enviarPedido;
 
+    //Indice de la lista de platillos
+    int indexPlatillos;
 
     //Lista de personas de ejemplo
     ObservableList<Platillo> listaPlatillos = FXCollections.observableArrayList();
     ListView<Platillo> listViewPlatillos = new ListView<>(listaPlatillos);
+
+    ObservableList<Platillo> listaPedido = FXCollections.observableArrayList();
+    ListView<Platillo> listViewPedido = new ListView<>(listaPedido);
+
+    //Lista enlazada del pedido
+    ListaEnlazadaAVL listaEnlazadaAVL = new ListaEnlazadaAVL();
 
     /**
      * Método para crear los elementos gráficos de la interfaz.
@@ -179,11 +196,11 @@ public class ClientApp extends Application implements Runnable{
         Label labelNombre = new Label();
         labelNombre.setText("Nombre:");
         labelNombre.setTranslateX(300);
-        labelNombre.setTranslateY(100);
+        labelNombre.setTranslateY(120);
 
         Label labelNombrePlatillo = new Label();
         labelNombrePlatillo.setTranslateX(300);
-        labelNombrePlatillo.setTranslateY(120);
+        labelNombrePlatillo.setTranslateY(140);
 
         labelCantidadCalorias = new Label();
         labelCantidadCalorias.setText("Calorías:");
@@ -203,6 +220,20 @@ public class ClientApp extends Application implements Runnable{
         labelPrecioPlatillo.setTranslateX(300);
         labelPrecioPlatillo.setTranslateY(260);
 
+        labelTiempo = new Label();
+        labelTiempo.setText("Tiempo: ");
+        labelTiempo.setTranslateX(300);
+        labelTiempo.setTranslateY(300);
+
+        labelTiempoPlatillo = new Label();
+        labelTiempoPlatillo.setTranslateX(300);
+        labelTiempoPlatillo.setTranslateY(320);
+
+        agregarPlatillo = new Button();
+        agregarPlatillo.setText("Agregar al pedido");
+        agregarPlatillo.setOnAction(e -> agregarElementoPedido(listaPlatillos.get(indexPlatillos)));
+        agregarPlatillo.setTranslateX(300);
+        agregarPlatillo.setTranslateY(380);
 
 
         paneMenu = new Pane();
@@ -211,24 +242,6 @@ public class ClientApp extends Application implements Runnable{
         paneMenu.setMinHeight(425);  //Altura mínima
         paneMenu.setTranslateX(50);
         paneMenu.setTranslateY(50);
-
-
-
-        //Instancias temporales para probar funcionamiento de la listView
-        Platillo platillo1 = new Platillo("Arroz con Pollo",2500,1200,120);
-        Platillo platillo2 = new Platillo("Olla de carne",6000,3400,301);
-        Platillo platillo3 = new Platillo("Batido de fresa",1200,2500,14);
-        Platillo platillo4 = new Platillo("Bistec",3000,2360,450);
-        Platillo platillo5 = new Platillo("Cerdo",20000,32520,36);
-
-        //Añadir los platillos temporales a la lista
-        listaPlatillos.addAll(
-                platillo1,
-                platillo2,
-                platillo3,
-                platillo4,
-                platillo5
-        );
 
 
         //Detecta la selección de un elemento en la lista
@@ -240,6 +253,8 @@ public class ClientApp extends Application implements Runnable{
                 labelNombrePlatillo.setText(elementoSeleccionado.getNombrePlatillo());
                 labelCantidadCaloriasPlatillo.setText(String.valueOf(elementoSeleccionado.getCalorias()));
                 labelPrecioPlatillo.setText("₡ " + elementoSeleccionado.getPrecio());
+                labelTiempoPlatillo.setText("s: " + elementoSeleccionado.getTiempo());
+                indexPlatillos = listViewPlatillos.getSelectionModel().getSelectedIndex();
             }
         });
 
@@ -259,15 +274,56 @@ public class ClientApp extends Application implements Runnable{
                 labelNombrePlatillo,
                 labelPrecioPlatillo,
                 labelCantidadCaloriasPlatillo,
-                listViewPlatillos
+                listViewPlatillos,
+                agregarPlatillo,
+                labelTiempo,
+                labelTiempoPlatillo
         );
 
+//--------------------------PEDIDOS-----------------------------
 
+        panePedidos = new Pane();
+        panePedidos.setStyle("-fx-border-color: #000;-fx-border-width: 2");
+        panePedidos.setMinWidth(300);  //Anchura mínima
+        panePedidos.setMinHeight(500);  //Altura mínima
+        panePedidos.setTranslateX(625);
+        panePedidos.setTranslateY(50);
+
+        //Detecta la selección de un elemento en la lista
+        listViewPedido.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Platillo>() {
+            @Override
+            public void changed(ObservableValue<? extends Platillo> observableValue, Platillo s, Platillo elementoSeleccionado) {
+                //Hace una acción cuando se selecciona un elemento de la lista
+                //Se cambian los textos de los Labels por los del Objeto de la lista seleccionado
+                /*labelNombrePlatillo.setText(elementoSeleccionado.getNombrePlatillo());
+                labelCantidadCaloriasPlatillo.setText(String.valueOf(elementoSeleccionado.getCalorias()));
+                labelPrecioPlatillo.setText("₡ " + elementoSeleccionado.getPrecio());*/
+            }
+        });
+
+        listViewPedido.setMaxHeight(375);
+        listViewPedido.setMinHeight(350);
+        listViewPedido.setTranslateX(25);
+        listViewPedido.setTranslateY(25);
+
+        enviarPedido = new Button();
+        enviarPedido.setText("Enviar pedido");
+        enviarPedido.setOnAction(e -> enviarPedidoServer());
+        enviarPedido.setTranslateX(150);
+        enviarPedido.setTranslateY(465);
+
+
+
+        panePedidos.getChildren().addAll(
+                listViewPedido,
+                enviarPedido
+        );
 
 
         //Agrega al Pane principal los demás contenedores
         mainPane.getChildren().addAll(
-                paneMenu);
+                paneMenu,
+                panePedidos);
 
 
         //Escena donde se mostrará los elementos
@@ -302,6 +358,20 @@ public class ClientApp extends Application implements Runnable{
 
 
     }
+
+    private void enviarPedidoServer(){
+
+        Message message = new Message("agregarPedidoCola");
+        message.setListaEnlazadaAVL(listaEnlazadaAVL);
+
+        enviarMensajeServidor(message);
+
+        listaEnlazadaAVL = new ListaEnlazadaAVL();
+
+        listaPedido.clear();
+
+    }
+
     /**
      * Método para comprobar el inicio de sesión del usuario.
      *
@@ -315,6 +385,20 @@ public class ClientApp extends Application implements Runnable{
         enviarMensajeServidor(message);
 
     }
+
+    private void agregarElementoPedido(Platillo platillo){
+
+        //Agrega un elemento a la lista observable
+        listaPedido.add(platillo);
+
+        //Crea un Nodo temporal con el valor del platillo
+        AvlNodo nodo = new AvlNodo(platillo);
+
+        //A la lista enlazada le añade el nodo con el platillo
+        listaEnlazadaAVL.insertarNuevoNodo(nodo);
+
+    }
+
     /**
      * Método para ejecutar la interfaz gráfica después de un inicio de sesión exitoso.
      * Solicita la lista de platillos al servidor y muestra los elementos gráficos.
@@ -340,6 +424,26 @@ public class ClientApp extends Application implements Runnable{
 
             enviarMensajeServidor(message);
     }
+
+    private void crearListView(ListaEnlazadaAVL listaEnlazadaAVL){
+
+        AvlNodo current = listaEnlazadaAVL.getHead();
+
+        while (current != null){
+
+            listaPlatillos.add(current.getPlatillo());
+
+            current = current.getNext();
+
+        }
+
+
+
+        listaEnlazadaAVL.verElementos();
+
+    }
+
+
 
     /**
      * Método que se ejecuta constantemente a la espera de algún mensaje por parte del servidor.
@@ -377,8 +481,8 @@ public class ClientApp extends Application implements Runnable{
                         System.out.println("Se mamo");
                     }
 
-                    case "listaPlatillosCreada" -> {
-                        System.out.println("Se manda a crear una lista de platillos :DD");
+                    case "crearListaPlatillos" -> {
+                        crearListView(message.getListaEnlazadaAVL());
                     }
 
 

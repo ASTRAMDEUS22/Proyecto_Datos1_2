@@ -1,16 +1,18 @@
 package Clases_auxiliares;
 
+import java.io.Serializable;
+
 /**
  * Clase que representa los platillos.
  * Contiene información sobre el nombre del platillo, las calorías, el precio y el tiempo de preparación.
  */
-public class Platillo {
+public class Platillo implements Serializable {
 
     // Atributos
     private String nombrePlatillo;
     private int calorias;
-    private int precio;
-    private float tiempo;
+    private float precio;
+    private int tiempo;
 
     /**
      * Constructor de la clase Platillo.
@@ -20,11 +22,17 @@ public class Platillo {
      * @param precio         El precio del platillo.
      * @param tiempo         El tiempo de preparación del platillo.
      */
-    public Platillo(String nombrePlatillo, int calorias, int precio, float tiempo) {
+    public Platillo(String nombrePlatillo, int calorias, float precio, int tiempo) {
         this.nombrePlatillo = nombrePlatillo;
         this.calorias = calorias;
         this.precio = precio;
         this.tiempo = tiempo;
+    }
+
+    public Platillo(String nombrePlatillo){
+
+        this.nombrePlatillo = nombrePlatillo;
+
     }
 
     /**
@@ -78,7 +86,7 @@ public class Platillo {
      *
      * @return El precio del platillo.
      */
-    public int getPrecio() {
+    public float getPrecio() {
         return precio;
     }
 
@@ -87,7 +95,7 @@ public class Platillo {
      *
      * @param precio El precio del platillo a establecer.
      */
-    public void setPrecio(int precio) {
+    public void setPrecio(float precio) {
         this.precio = precio;
     }
 
@@ -96,7 +104,7 @@ public class Platillo {
      *
      * @return El tiempo de preparación del platillo.
      */
-    public float getTiempo() {
+    public int getTiempo() {
         return tiempo;
     }
 
@@ -105,7 +113,7 @@ public class Platillo {
      *
      * @param tiempo El tiempo de preparación del platillo a establecer.
      */
-    public void setTiempo(float tiempo) {
+    public void setTiempo(int tiempo) {
         this.tiempo = tiempo;
     }
 }

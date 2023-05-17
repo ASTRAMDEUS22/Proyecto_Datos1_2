@@ -8,14 +8,16 @@ import java.io.Serializable;
  */
 public class Message implements Serializable {
 
-    // Atributos
-    private String nombreMetodo;
-    private String usuario;
-    private String password;
-    private String newUsuario;
-    private String newPassword;
+    //Definir atributos
+    private String nombreMetodo,usuario,password,newUsuario,newPassword;
     private Nodo nodo;
     private ListaEnlazada listaEnlazada;
+    private ListaEnlazadaAVL listaEnlazadaAVL;
+    private int time;
+
+    public Message(){
+
+    }
 
     /**
      * Constructor de Message utilizado cuando se requieren el nombre del método, usuario y contraseña.
@@ -118,6 +120,24 @@ public class Message implements Serializable {
     public void setListaEnlazada(ListaEnlazada listaEnlazada) {
         this.listaEnlazada = listaEnlazada;
     }
+
+
+    public ListaEnlazadaAVL getListaEnlazadaAVL() {
+        return listaEnlazadaAVL;
+    }
+
+    public void setListaEnlazadaAVL(ListaEnlazadaAVL listaEnlazadaAVL) {
+        this.listaEnlazadaAVL = listaEnlazadaAVL;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
     /**
      * Obti
      ene el nuevo nombre de usuario.

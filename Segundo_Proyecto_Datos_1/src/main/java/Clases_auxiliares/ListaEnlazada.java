@@ -49,7 +49,7 @@ public class ListaEnlazada implements Serializable {
     public boolean devolverElemento(String user) {
         Nodo current = this.head;
         while (current != null) {
-            if (current.getValor().getUsername().equals(user)) {
+            if (current.getUsuario().getUsername().equals(user)) {
                 return true;
             }
             current = current.getNext();
@@ -67,12 +67,12 @@ public class ListaEnlazada implements Serializable {
         Nodo refAnterior = this.head;
 
         // Si el Nodo a eliminar es el head
-        if (current.getValor().getUsername().equals(user)) {
+        if (current.getUsuario().getUsername().equals(user)) {
             this.head = current.getNext();
         }
 
         while (current != null) {
-            if (current.getValor().getUsername().equals(user)) {
+            if (current.getUsuario().getUsername().equals(user)) {
                 refAnterior.setNext(current.getNext());
                 current.setNext(null);  // Se elimina el apuntador
                 return;
@@ -94,9 +94,9 @@ public class ListaEnlazada implements Serializable {
     public void editarElemento(String user, String newUser, String newPassword) {
         Nodo current = this.head;
         while (current != null) {
-            if (current.getValor().getUsername().equals(user)) {
-                current.getValor().setUsername(newUser);
-                current.getValor().setPassword(newPassword);
+            if (current.getUsuario().getUsername().equals(user)) {
+                current.getUsuario().setUsername(newUser);
+                current.getUsuario().setPassword(newPassword);
                 System.out.println("Se encontró el Nodo en la lista enlazada");
                 return;
             }
@@ -114,7 +114,7 @@ public class ListaEnlazada implements Serializable {
         Nodo current = this.head;
 
         while (current != null){
-            System.out.println(current.getValor().getUsername());
+            System.out.println(current.getUsuario().getUsername());
 
             current = current.getNext();
 

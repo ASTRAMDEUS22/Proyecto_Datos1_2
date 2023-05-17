@@ -1,10 +1,13 @@
 package Clases_auxiliares;
 
-public class AvlNodo {
+import java.io.Serializable;
+
+public class AvlNodo implements Serializable {
 
     private Platillo platillo;
     private int altura;
     private AvlNodo derecho,izquierdo;
+    private AvlNodo next;
 
     public AvlNodo(Platillo platillo){
         this.platillo = platillo;
@@ -40,5 +43,14 @@ public class AvlNodo {
 
     public void setIzquierdo(AvlNodo izquierdo) {
         this.izquierdo = izquierdo;
+    }
+
+
+    public AvlNodo getNext() {
+        return next;
+    }
+
+    public void setNext(AvlNodo next) {
+        this.next = next;
     }
 }

@@ -5,6 +5,9 @@ public class ArbolALV {
     //Ráiz del árbol
     AvlNodo raiz;
 
+    //Lista enlazada para manejar de forma diferente la información
+    ListaEnlazadaAVL listaEnlazada = new ListaEnlazadaAVL();
+
     /**
      * Devuelve la altura actual del nodo.
      * @param nodo Es el nodo del cual se desea conocer la altura.
@@ -312,10 +315,12 @@ public class ArbolALV {
                 if (temp == null) {
                     temp = nodo;
                     nodo = null;
+                    System.out.println("Nodo eliminado");
                 }
                 //Caso contrario, el hijo toma la posición del padre
                 else {
                     nodo = temp;
+                    System.out.println("Nodo eliminado");
                 }
             }
             /*
@@ -404,6 +409,25 @@ public class ArbolALV {
         return actual;
     }
 
+    public void crearListaPlatillos(){
+
+        recursiAgregarPlat(this.raiz);
+
+    }
+
+    public void recursiAgregarPlat(AvlNodo current){
+
+        if (current == null){
+            return;
+        }
+
+        listaEnlazada.insertarNuevoNodo(current);
+
+        recursiAgregarPlat(current.getDerecho());
+        recursiAgregarPlat(current.getIzquierdo());
+
+    }
+
     /**
      * Método recursivo que recorre el árbol mostrando cada elemento.
      * @param nodo Es la raíz del árbol o subárbol del cuál se desea conocer sus nodos.
@@ -415,6 +439,11 @@ public class ArbolALV {
             preorden(nodo.getDerecho());
         }
     }
+
+    public ListaEnlazadaAVL getListaEnlazada() {
+        return listaEnlazada;
+    }
+
 
     /**
      * Devuelve la raíz del árbol.
