@@ -149,7 +149,6 @@ public class MasterApp extends Application implements Runnable{
             botonnAgregarPlato;
 
     //Pane
-    Pane panePedidos;
     Pane panePlatillos;
 
     //Stage
@@ -274,12 +273,7 @@ public class MasterApp extends Application implements Runnable{
         botonnAgregarPlato.setTranslateX(700);
         botonnAgregarPlato.setTranslateY(450);
 
-        panePedidos = new Pane();
-        panePedidos.setStyle("-fx-border-color: #000;-fx-border-width: 2");
-        panePedidos.setMinWidth(300);  //Anchura mínima
-        panePedidos.setMinHeight(500);  //Altura mínima
-        panePedidos.setTranslateX(50);
-        panePedidos.setTranslateY(50);
+
 
 
         //Lista platos
@@ -293,7 +287,7 @@ public class MasterApp extends Application implements Runnable{
         panePlatillos.setStyle("-fx-border-color: #000;-fx-border-width: 2");
         panePlatillos.setMinWidth(300);  //Anchura mínima
         panePlatillos.setMinHeight(500);  //Altura mínima
-        panePlatillos.setTranslateX(370);
+        panePlatillos.setTranslateX(100);
         panePlatillos.setTranslateY(50);
 
         panePlatillos.getChildren().add(
@@ -380,7 +374,6 @@ public class MasterApp extends Application implements Runnable{
                 textField_precio,
                 textField_tiempo,
                 botonnAgregarPlato,
-                panePedidos,
                 panePlatillos
         );
 

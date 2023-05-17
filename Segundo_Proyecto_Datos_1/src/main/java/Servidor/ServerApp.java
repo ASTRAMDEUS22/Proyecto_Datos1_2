@@ -22,10 +22,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+import org.firmata4j.IODevice;
+import org.firmata4j.Pin;
+import org.firmata4j.firmata.FirmataDevice;
+
+
 //CLass server
 public class ServerApp implements Runnable {
 
     ServerSocket serverSocket;
+    static String arduinoPort = "COM5";
+    static IODevice placaArduino = new FirmataDevice(arduinoPort);
 
     public ServerApp() throws IOException {
 
@@ -44,6 +51,15 @@ public class ServerApp implements Runnable {
 
         Thread hilo1 = new Thread(preparacionActual);
         hilo1.start();
+
+        try {
+            placaArduino.start();
+            placaArduino.ensureInitializationIsDone();
+
+            System.out.println("Placa iniciada");
+        }catch (Exception e){
+            System.out.println("Placa no iniciada");
+        }
 
         //restarContador();
 

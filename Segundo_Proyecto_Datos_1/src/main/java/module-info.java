@@ -9,6 +9,7 @@ module sample.segundoproyectodatos1 {
     requires com.fasterxml.jackson.databind;
     requires java.scripting;
     requires com.google.gson;
+    requires firmata4j;
     //requires org.json;
 
     opens Admin_y_Usuario to javafx.fxml;
