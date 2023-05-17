@@ -1,0 +1,1 @@
+packageSearchIndex = [{"m":"sample.segundoproyectodatos1","l":"Admin_y_Usuario"},{"l":"All Packages","u":"allpackages-index.html"},{"m":"sample.segundoproyectodatos1","l":"Clases_auxiliares"},{"m":"sample.segundoproyectodatos1","l":"Servidor"}];updateSearchResults();
